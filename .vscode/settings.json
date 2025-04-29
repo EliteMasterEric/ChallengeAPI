@@ -1,5 +1,12 @@
 {
     "files.associations": {
         ".anm2": "xml"
-    }
+    },
+
+    // Lua settings
+    "Lua.diagnostics.enable": true,
+    "Lua.lint.enable": true,
+
+    // Tell Lua to assume these global variables exist
+    "Lua.diagnostics.globals": [],
 }

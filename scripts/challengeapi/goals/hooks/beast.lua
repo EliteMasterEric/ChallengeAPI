@@ -1,4 +1,4 @@
--- Handles functionality for custom Beast challenge trophies.
+-- Handles functionality for ensuring the Beast challenge goal functions correctly.
 
 local VARIANT_STALACTITE = 1
 local VARIANT_BEAST_ROCK_PROJECTILE = 2
