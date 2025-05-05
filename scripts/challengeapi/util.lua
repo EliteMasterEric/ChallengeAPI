@@ -16,7 +16,7 @@ function ChallengeAPI.Util.TearDelayToFireRate(delay)
 end
 
 function ChallengeAPI.Util.FireRateToTearDelay(fireRate)
-    return (30 / fireRate) - 1
+    return (30 / fireRate)
 end
 
 ---Replaces Variable placeholders in string with a given value
@@ -41,4 +41,30 @@ function ChallengeAPI.Util.ReplaceVariableStr(str, varID, newString)
 	else
 		return str:gsub("{"..varID.."}", newString)
 	end
+end
+
+-- Append all the contents of t2 to t1
+function ChallengeAPI.Util.AppendTable(t1, t2)
+    for i = 1, #t2 do
+        t1[#t1 + 1] = t2[i]
+    end
+    return t1
+end
+
+-- Returns true if the given table contains the given value.
+function ChallengeAPI.Util.TableContains(t, value)
+    for _, v in ipairs(t) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
+function ChallengeAPI.Util.LoadGoalIcon(iconPath)
+    local sprite = Sprite()
+    sprite:Load("gfx/ui/challenges/goals/goal.anm2", false)
+    sprite:ReplaceSpritesheet(0, iconPath)
+    sprite:LoadGraphics()
+    return sprite
 end

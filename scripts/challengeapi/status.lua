@@ -27,3 +27,4 @@ function ChallengeAPI:GetCurrentChallengeGoal()
 
     return challenge:FetchGoal()
 end
+

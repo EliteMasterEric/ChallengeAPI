@@ -12,7 +12,9 @@
 ---@field hushMode GoalHushMode How this challenge goal should behave in relation to Hush. Alter this with Goal:SetHushMode.
 ---@field bossRushMode GoalBossRushMode How this challenge goal should behave in relation to Boss Rush. Alter this with Goal:SetBossRushMode.
 ---@field stageTypes table<LevelStage, integer> A table of stage types which should be forced during generation.
+---@field eidIcon string? The icon to display for this challenge goal next to the name in the EID description.
 ---@field eidNotes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
+---@field goalIcon Sprite The icon to display for this challenge goal in the user interface.
 local Goal = {}
 Goal.__index = Goal
 
@@ -51,6 +53,7 @@ function Goal.new(id, name, endStage, altPath, secretPath, megaSatan)
         -- Home has no stage types
         -- [LevelStage.STAGE8] = -1,
     }
+    self.eidIcon = nil
     self.eidNotes = {}
     return self
 end
@@ -121,6 +124,48 @@ end
 ---@param notes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
 function Goal:SetEIDNotes(notes)
     self.eidNotes = notes
+end
+
+function Goal:BuildDescriptionLines()
+    local lines = {}
+    
+    if self.secretPath == ChallengeAPI.GoalSecretPaths.SECRET then
+        table.insert(lines, ChallengeAPI:Translate("EIDGoalSecretPath"))
+        if self.endStage >= LevelStage.STAGE4_1 then
+            table.insert(lines, ChallengeAPI:Translate("EIDGoalKnifePieces"))
+        end
+    end
+
+    if #self.eidNotes > 0 then
+        lines = ChallengeAPI.Util.AppendTable(lines, self.eidNotes)
+    end
+
+    return lines
+end
+
+function Goal:SetEIDIcon(icon)
+    self.eidIcon = icon
+end
+
+-- Set a sprite to use for this goal on the HUD.
+-- Also registers it to be displayed in EID!
+---@param icon Sprite
+---@param width integer Width of the icon, in pixels. Defaults to 16.
+---@param height integer Height of the icon, in pixels. Defaults to 16.
+---@param makeEIDIcon boolean Whether to register the icon in EID. Defaults to true.
+function Goal:SetGoalIcon(icon, width, height, makeEIDIcon)
+    makeEIDIcon = makeEIDIcon or false
+
+    self.goalIcon = icon
+
+    if EID and makeEIDIcon then
+        width = width or 16
+        height = height or 16
+        local leftOffset = 0
+        local topOffset = 0
+
+        EID:addIcon("Goal"..self.id, "idle", -1, width, height, icon, leftOffset, topOffset, self.goalIcon)
+    end
 end
 
 -- Retrieve the first goal corresponding to the values from the `challenges.xml` file.

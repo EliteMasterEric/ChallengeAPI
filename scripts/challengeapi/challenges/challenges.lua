@@ -8,6 +8,7 @@
 ---@field goalId string The ID for the ChallengeAPI goal corresponding to this challenge.
 ---@field isHardMode boolean Whether this challenge is in Hard Mode
 ---@field startingCollectibles string[] A list of all collectibles the player starts with
+---@field startingPocketActives string[] A list of all pocket actives the player starts with
 ---@field removedCollectibles string[] A list of all collectibles the player does not start with (for example, Bethany doesn't start with Book of Virtues in some challenges)
 ---@field startingCollectiblesEsau string[] A list of all collectibles the second player starts with
 ---@field startingTrinkets string[] A list of all trinkets the player starts with
@@ -26,6 +27,7 @@
 ---@field isMaxDamage boolean If true, player damage is fixed at 100 (like Pong and Slow Roll)
 ---@field isMinShotSpeed boolean If true, player shot speed is fixed at 1.0 (like Slow Roll)
 ---@field isBigRange boolean If true, player range is fixed at 16.5 (like Pong)
+---@field eidNotes string[] A list of additional lines to display in the EID description of the challenge.
 ---@field minimumFireRate number? The minimum fire rate for the player, this applies a maximum tear delay
 local ChallengeParams = {}
 ChallengeParams.__index = ChallengeParams
@@ -63,6 +65,7 @@ function ChallengeParams.new(id, name, playerType, goalId)
     self.curse = {}
     self.curseFilter = {}
     self.minimumFireRate = nil
+    self.eidNotes = {}
     return self
 end
 
@@ -71,16 +74,14 @@ function ChallengeParams:FetchGoal()
     return ChallengeAPI:GetGoalById(self.goalId)
 end
 
-
 -- Modifies the challenge goal for this challenge.
--- NOTE: This doesn't let you change the basic parameters of a challenge!
 function ChallengeParams:SetGoal(goal)
     self.goalId = goal.id
 end
 
 -- Modifies whether this challenge is in Hard Mode.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
-function ChallengeParams:SetHardMode(value)
+function ChallengeParams:SetIsHardMode(value)
     self.isHardMode = value
 end
 
@@ -88,6 +89,12 @@ end
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
 function ChallengeParams:SetStartingCollectibles(list)
     self.startingCollectibles = list
+end
+
+-- Modifies the list of pocket actives the player starts with.
+-- NOTE: This doesn't let you change the basic parameters of a challenge!
+function ChallengeParams:SetStartingPocketActives(list)
+    self.startingPocketActives = list
 end
 
 -- Modifies the list of collectibles the player does not start with.
@@ -144,51 +151,76 @@ function ChallengeParams:SetStartingCoins(coins)
     self.startingCoins = coins
 end
 
+-- Whether this challenge forcibly applies a starting damage bonus.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
 function ChallengeParams:SetStartingDamageBonus(damageBonus)
     self.startingDamageBonus = damageBonus
 end
 
+-- Whether this challenge forcibly sets the player's fire rate to a minimum value, if any.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
 function ChallengeParams:SetMinimumFireRate(minimumFireRate)
     self.minimumFireRate = minimumFireRate
 end
 
+-- Whether this challenge forcibly blindfolds the player, preventing them from shooting.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
 function ChallengeParams:SetIsBlindfolded(isBlindfolded)
     self.isBlindfolded = isBlindfolded
 end
 
+-- Whether this challenge forcibly sets the player's damage to 100.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
 function ChallengeParams:SetIsMaxDamage(isMaxDamage)
     self.isMaxDamage = isMaxDamage
 end
 
+-- Whether this challenge forcibly sets the player's shot speed to 1.0.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
+---@param isMinShotSpeed boolean
 function ChallengeParams:SetIsMinShotSpeed(isMinShotSpeed)
     self.isMinShotSpeed = isMinShotSpeed
 end
 
+-- Whether this challenge forcibly sets the player's range to 16.5.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
+---@param isBigRange boolean
 function ChallengeParams:SetIsBigRange(isBigRange)
     self.isBigRange = isBigRange
 end
 
+-- Define the rooms which are not allowed to spawn.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
+---@param roomFilter RoomType[]
 function ChallengeParams:SetRoomFilter(roomFilter)
     self.roomFilter = roomFilter
 end
 
+-- Define the curses which are forced to spawn.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
+---@param curse LevelCurse[]
 function ChallengeParams:SetCurse(curse)
     self.curse = curse
 end
 
+-- Define the curses which are not allowed to spawn.
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
+--       It's only for the EID description.
+---@param curseFilter LevelCurse[]
 function ChallengeParams:SetCurseFilter(curseFilter)
     self.curseFilter = curseFilter
 end
 
+-- If the player has a minimum fire rate, compute the corresponding maximum tear delay.
+---@return number? The maximum tear delay, or nil if there is no minimum fire rate.
 function ChallengeParams:GetMaxTearDelay()
     if self.minimumFireRate == nil then
         return nil
@@ -197,6 +229,28 @@ function ChallengeParams:GetMaxTearDelay()
     return ChallengeAPI.Util.FireRateToTearDelay(self.minimumFireRate)
 end
 
+---Specify additional line of description for this goal,
+---to be displayed in External Item Descriptions (EID).
+---@param notes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
+function ChallengeParams:SetEIDNotes(notes)
+    self.eidNotes = notes
+end
+
+---Builds the description lines for this challenge and returns them for use by EID.
+---@return string[]
+function ChallengeParams:BuildDescriptionLines()
+    local lines = {}
+
+    if #self.eidNotes > 0 then
+        lines = ChallengeAPI.Util.AppendTable(lines, self.eidNotes)
+    end
+
+    return lines
+end
+
+
+-- Whether this particular challenge is currently active.
+---@return boolean
 function ChallengeParams:IsActive()
     return Isaac.GetChallenge() == self.id
 end
@@ -221,7 +275,7 @@ function ChallengeAPI:GetChallengeById(id)
     return ChallengeAPI.challenges[id]
 end
 
---- Retrieves a challenge by its name.
+--- Retrieves a challenge by its readable name.
 ---@param name string
 ---@return ChallengeParams?
 function ChallengeAPI:GetChallengeByName(name)
@@ -232,7 +286,7 @@ function ChallengeAPI:GetChallengeByName(name)
     return ChallengeAPI:GetChallengeById(challengeId)
 end
 
---- Returns true if a challenge with the given ID is registered.
+--- Returns true if a challenge with the given ID is currently registered.
 --- @param id integer
 --- @return boolean
 function ChallengeAPI:IsChallengeRegistered(id)

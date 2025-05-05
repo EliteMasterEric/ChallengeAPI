@@ -107,7 +107,7 @@ local function registerChallengeFromConfigData(entry)
 
     -- Parse the starting items
     -- Some challenges remove starting items from certain characters, indicated by a negative.
-    -- If we are in Repentogon, the item name may be used instead.
+    -- If we are in REPENTOGON, the item name might get used instead.
     for _, collectible in ipairs(startingCollectiblesStrs) do
         local collectibleId = tonumber(collectible)
         if collectibleId == nil then
@@ -130,7 +130,7 @@ local function registerChallengeFromConfigData(entry)
     local startingTrinkets = {}
 
     -- Parse the starting trinkets
-    -- If we are in Repentogon, the trinket name may be used instead
+    -- If we are in REPENTOGON, the trinket name might get used instead
     for _, trinketStr in ipairs(startingTrinketsStrs) do
         local trinketId = tonumber(trinketStr)
         if trinketId == nil then
@@ -153,8 +153,6 @@ local function registerChallengeFromConfigData(entry)
 
     ---@type PillEffect?
     local startingPill = entry.startingpill and tonumber(entry.startingpill) or nil
-
-    print("Challenge pill: ", startingPill)
 
     ---@type ChallengeParams
     local challenge = ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
@@ -196,7 +194,8 @@ function ChallengeAPI:RegisterChallengesFromConfig()
             end
         end
     else
-        -- Without Repentogon, we can't cache information about existing challenges.
-        -- Guess we'll have to wing it?
+        -- Without REPENTOGON, we can't cache information about existing challenges.
+        -- Guess we'll have to hardcode the vanilla challenges.
+        ChallengeAPI:RegisterVanillaChallenges()
     end
 end

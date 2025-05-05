@@ -63,11 +63,11 @@ local goal = ChallengeAPI:GetGoalByChallengeParams(endStage, altPath, secretPath
 
 * The `Goal` corresponding to the challenge parameters, or `nil` if no goal with those parameters exists.
 
-# ChallengeAPI.ChallengeParams
+## ChallengeAPI.ChallengeParams
 
 A ChallengeParams is a data structure representing a playable challenge. It provides a set of functions for interacting with the challenge's parameters, including the goal and other information.
 
-ChallengeAPI will automatically register each challenge from the `challenges.xml` file, and define their basic parameters.
+If REPENTOGON is installed, ChallengeAPI will automatically register each challenge from the `challenges.xml` file, and define their basic parameters. Otherwise, you will have to register your custom challenges manually in order for them to work with ChallengeAPI.
 
 If you want to change the goal for a challenge, retrieve it using `ChallengeAPI:GetChallengeById` or `ChallengeAPI:GetChallengeByName`, and then use `ChallengeParams:SetGoal` to set a new goal. Don't modify the goal directly or you may mess up other challenges!
 

@@ -1,6 +1,8 @@
 local mod = RegisterMod("ChallengeAPI", 1)
 ChallengeAPI = mod
 
+ChallengeAPI.CALLBACK_POST_LOAD = "CHALLENGEAPI_POST_LOAD"
+
 ---@diagnostic disable-next-line: undefined-global
 ChallengeAPI.isRepentancePlus = REPENTANCE_PLUS or FontRenderSettings ~= nil -- True if we are on Repentance+, the latest DLC
 ChallengeAPI.isRepentance = REPENTANCE or ChallengeAPI.isRepentancePlus -- True if we are on Repentance OR Repentance+
@@ -29,6 +31,7 @@ include('scripts.challengeapi.goals.data_custom')
 -- Challenges
 include('scripts.challengeapi.challenges.challenges')
 include('scripts.challengeapi.challenges.data_config')
+include('scripts.challengeapi.challenges.data_hardcoded')
 
 -- Challenge Goal Hooks
 include('scripts.challengeapi.goals.hooks.ascent')
@@ -39,39 +42,41 @@ include('scripts.challengeapi.goals.hooks.stage_type')
 include('scripts.challengeapi.hud.challenge')
 include('scripts.challengeapi.hud.eid')
 
--- Tests (REMOVE LATER)
-include('scripts.challengeapi.test')
+local function initialize()
+  ChallengeAPI.Log("Starting ChallengeAPI...")
 
-local function enableIntegrations(_)
   if REPENTOGON then
-    ChallengeAPI.Log("Repentogon integration enabled.")
+    ChallengeAPI.Log("REPENTOGON integration enabled.")
   else
-    ChallengeAPI.Log("Repentogon integration disabled.")
+    ChallengeAPI.Log("REPENTOGON integration disabled. Some challenge descritions may be unavailable.")
   end
 
-  ChallengeAPI:EID_EnableIntegration()
-end
+  ChallengeAPI:LoadLanguageData()
 
--- Called after all mods are loaded, in case of load order issues.
-local function onPostModsLoaded(_)
-  ChallengeAPI.Log("ChallengeAPI has loaded.")
-
-  ChallengeAPI:Initialize()
-  enableIntegrations()
-end
-
-function ChallengeAPI:Initialize(_)
   ChallengeAPI.goalsInitialized = true
   ChallengeAPI:RegisterVanillaGoals()
   ChallengeAPI:RegisterAdditionalGoals()
   ChallengeAPI:RegisterCustomGoals()
-
+  
   ChallengeAPI.challengesInitialized = true
-  ChallengeAPI:RegisterVanillaChallenges()
+  ChallengeAPI:RegisterChallengesFromConfig()
+  -- Regardless if REPENTOGON is enabled, we need to apply corrections and custom descriptions.
+  ChallengeAPI:RegisterChallengeCorrections()
+
+  ChallengeAPI.Log("ChallengeAPI has finished loading.")
+end
+
+-- Called after all mods are loaded, in case of load order issues.
+local function onPostModsLoaded(_)
+  ChallengeAPI:EID_EnableIntegration()
+  
+  Isaac.RunCallback(ChallengeAPI.CALLBACK_POST_LOAD)
 end
 
 if REPENTOGON then
-    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_MODS_LOADED, CallbackPriority.DEFAULT, onPostModsLoaded)
+  ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_MODS_LOADED, CallbackPriority.DEFAULT, onPostModsLoaded)
 else
-    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.DEFAULT, onPostModsLoaded)
+  ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.DEFAULT, onPostModsLoaded)
 end
+
+initialize()

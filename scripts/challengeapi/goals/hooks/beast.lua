@@ -90,7 +90,6 @@ end
 ---@param entity EntityNPC
 local function onBeastPreUpdate(mod, entity)
   if entity.Type == EntityType.ENTITY_BEAST and entity.Variant == 0 then
-    print("beast: " .. entity.State .. ", " .. tostring(isBeastComplete))
     if isBeastComplete then
       -- Force the Beast into the Idle state (preventing it from charging),
       -- then return true to prevent default AI updates.
@@ -121,7 +120,7 @@ end
 
 -- Reset local variables once the run has completed
 local function onGameEnd(mod)
-  print("Game is ending...")
+  ChallengeAPI.Log("Game is ending...")
   isBeastComplete = false
   beastDefeatFrame = nil
 end
