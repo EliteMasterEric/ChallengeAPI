@@ -216,10 +216,13 @@ ChallengeAPI.language[languageCode] = {
         },
         [Challenge.CHALLENGE_RED_REDEMPTION] = {
             "{{CurseLabyrinth}} "
-            .. "Floors generate in separated clusters, with one {{Shop}} Shop, two {{BossRoom}} Boss Rooms, and two {{TreasureRoom}} Treasure Rooms",
+            .. "Floors generate in disconnected clusters",
+
+            "{{Room}} "
+            .. "One {{Shop}} Shop, two {{BossRoom}} Boss Rooms, and two {{TreasureRoom}} Treasure Rooms generate each floor",
 
             "{{Collectible580}} "
-            .. "Red Key starts as a pocket active with infinite charges.",
+            .. "Red Key is a pocket active with infinite charges.",
 
             "{{Collectible580}} "
             .. "Red Key spawns Dark Esau after 20 uses on a single floor, and every 5 additional uses."

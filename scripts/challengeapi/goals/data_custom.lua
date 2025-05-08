@@ -41,13 +41,13 @@ function ChallengeAPI:RegisterCustomGoals()
    -- Request custom functionality:
    --   - [] Auto-unlock the Boss Rush door
    local bossRush = ChallengeAPI:RegisterGoal("boss-rush", "Boss Rush", LevelStage.NUM_STAGES, ChallengeAPI.GoalAltPaths.DEVIL, ChallengeAPI.GoalSecretPaths.NORMAL, false)
-   bossRush:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mom.png"), 16, 16)
+   -- bossRush:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mom.png"), 16, 16)
    bossRush:SetBossRushMode(ChallengeAPI.GoalBossRushMode.ALWAYS)
 
    -- Defeat Boss Rush, automatically killing the player if they are not in the Boss Rush room when the timer runs out.
    -- Request custom functionality:
    --   - [] Auto-kill player if they run out of time
    local bossRushTimed = ChallengeAPI:RegisterGoal("boss-rush-timed", "Boss Rush", LevelStage.NUM_STAGES, ChallengeAPI.GoalAltPaths.DEVIL, ChallengeAPI.GoalSecretPaths.NORMAL, false)
-   bossRushTimed:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mom.png"), 16, 16)
+   -- bossRushTimed:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mom.png"), 16, 16)
    bossRushTimed:SetBossRushMode(ChallengeAPI.GoalBossRushMode.KILL)
 end

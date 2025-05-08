@@ -1,5 +1,12 @@
 -- Handles the custom category in External Item Descriptions
 
+ChallengeAPI.EID_CurrentScrollOffset = 0
+ChallengeAPI.EID_DescriptionLineCount = 8
+ChallengeAPI.EID_HasInitialized = false
+
+-- A list of 
+ChallengeAPI.EID_MarkupCache = {}
+
 local function isEIDEnabled()
     return EID ~= nil
 end
@@ -21,20 +28,18 @@ local function injectEIDCategory()
 
     local category = {
         id = "ChallengeAPI",
-        -- true: show only one entry at a time but allow pressing up/down to scroll
-        isScrollable = false,
+        -- we use scrolling
+        isScrollable = true,
         -- true: hide content in overview tab.
         hideInOverview = false,
         entryGenerators = {
             function(player) 
-                ChallengeAPI:EID_ItemReminderHandleChallengeInfo(player)
+                ChallengeAPI:EID_HandleChallengeInfo(player)
             end
         },
-        scrollbarGenerator = {
-            function(player)
-                ChallengeAPI:EID_HandleScroll(player)
-            end
-        }
+        scrollbarGenerator = function(player)
+            return ChallengeAPI:EID_HandleChallengeScrollbar(player)
+        end
     }
 
     -- 2 = after "Overview"
@@ -75,18 +80,42 @@ local function EID_HandleUnknownChallenge(player)
     )
 end
 
--- Display information about the current challenge in the "Current Challenge" category of EID.
+-- Add a new markup icon to EID.
+-- If EID is not initialized yet, it will be added to a cache to be added later.
+function ChallengeAPI:EID_AddIcon(goalId, width, height, sprite, leftOffset, topOffset)   
+    local shortcut = goalId
+    local animName = "Idle"
+    local animFrame = -1
+
+    if ChallengeAPI.EID_HasInitialized then
+        EID:addIcon(shortcut, animName, animFrame, width, height, leftOffset, topOffset, sprite)
+    else
+        table.insert(ChallengeAPI.EID_MarkupCache, {shortcut, animName, animFrame, width, height, leftOffset, topOffset, sprite})
+    end
+end
+
+-- Add all icons in the markup cache to EID.
+function ChallengeAPI:EID_AddCachedIcons()
+    for _, iconData in ipairs(ChallengeAPI.EID_MarkupCache) do
+        EID:addIcon(iconData[1], iconData[2], iconData[3], iconData[4], iconData[5], iconData[6], iconData[7], iconData[8])
+    end
+
+    ChallengeAPI.EID_MarkupCache = {}
+end
+
+-- Build the full description of the current challenge.
+-- We will later truncate it to fit in the EID description area. 
 ---@param player EntityPlayer
----@param pageNumber? integer The page number to display. `nil` if not paging.
-function ChallengeAPI:EID_ItemReminderHandleChallengeInfo(player, pageNumber)
+---@return string[]
+function ChallengeAPI:EID_BuildFullChallengeDescription(player)
     if not ChallengeAPI:IsInChallenge() then
-        return
+        return {}
     end
 
     local challenge = ChallengeAPI:GetCurrentChallenge()
     if challenge == nil then
         EID_HandleUnknownChallenge(player)
-        return
+        return {}
     end
     
     local description = {}
@@ -267,33 +296,87 @@ function ChallengeAPI:EID_ItemReminderHandleChallengeInfo(player, pageNumber)
         table.insert(description, line)
     end
 
-    if pageNumber ~= nil then
-        if pageNumber == 0 then
-            -- NEVER add the additional description.
-        else
-            -- ONLY use the additional description.
-            description = challenge:BuildDescriptionLines()
-        end
-    else
-        -- Always add the additional description.
-        description = ChallengeAPI.Util.AppendTable(description, challenge:BuildDescriptionLines())
-    end
+    description = ChallengeAPI.Util.AppendTable(description, challenge:BuildDescriptionLines())
 
-    -- EID description line separator is "#"
-    local descString = table.concat(description, "#")
-
-    EID:ItemReminderAddTempDescriptionEntry(EID:GetPlayerIcon(player:GetPlayerType()), challenge.name, descString)
+    return description
 end
 
-function ChallengeAPI:EID_HandleScroll(player)
-    if not EID:ItemReminderCanAddMoreToView() then
+-- Display information about the current challenge in the "Current Challenge" category of EID.
+---@param player EntityPlayer
+function ChallengeAPI:EID_HandleChallengeInfo(player)
+    if not ChallengeAPI:IsInChallenge() then
         return
     end
 
-    local index = EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory]
-    ChallengeAPI.Log("ChallengeAPI: EID_HandleScroll (index = " .. index .. ")")
-    ChallengeAPI:EID_ItemReminderHandleChallengeInfo(player, index)
+    local challenge = ChallengeAPI:GetCurrentChallenge()
+    if challenge == nil then
+        EID_HandleUnknownChallenge(player)
+        return
+    end
 
+    local description = ChallengeAPI:EID_BuildFullChallengeDescription(player)
+
+    local descLineCount = #description
+
+    local position = EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory]
+    -- Clamp the position
+    if position < 0 then
+        EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory] = 0
+    elseif position > descLineCount then
+        EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory] = descLineCount
+    end
+
+    local startIndex = position + 1
+    local endIndex = startIndex + ChallengeAPI.EID_DescriptionLineCount
+
+    if descLineCount < endIndex then
+        endIndex = descLineCount
+    end
+
+    local visibleDescription = {}
+    for i = startIndex, endIndex do
+        table.insert(visibleDescription, description[i])
+    end
+
+    -- EID description line separator is "#"
+    local descString = table.concat(visibleDescription, "#")
+
+    EID:ItemReminderAddTempDescriptionEntry(EID:GetPlayerIcon(player:GetPlayerType()), "{{NoLB}}" .. challenge.name, descString)
+end
+
+-- Handle the scrollbar for the "Current Challenge" category in EID.
+---@param player EntityPlayer
+function ChallengeAPI:EID_HandleChallengeScrollbar(player)
+    if not ChallengeAPI:IsInChallenge() then
+        return
+    end
+
+    local challenge = ChallengeAPI:GetCurrentChallenge()
+    if challenge == nil then
+        return
+    end
+
+    local descLineCount = #ChallengeAPI:EID_BuildFullChallengeDescription(player)
+    if descLineCount <= ChallengeAPI.EID_DescriptionLineCount then
+        return ""
+    end
+
+    local position = EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory]
+    -- Clamp the position
+    if position < 0 then
+        EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory] = 0
+    elseif position > descLineCount then
+        EID.ItemReminderSelectedItems[EID.ItemReminderSelectedCategory] = descLineCount
+    end
+
+    local upButton = EID.ButtonToIconMap[EID.Config["ItemReminderNavigateUpButton"]]
+    local downButton = EID.ButtonToIconMap[EID.Config["ItemReminderNavigateDownButton"]]
+
+    local currentLine = position + 1
+    
+    local scrollbarDesc = "{{Blank}} {{NoLB}} " .. upButton .. " (" .. currentLine .. "/" .. descLineCount .. ") " .. downButton .. "#"
+
+    return scrollbarDesc
 end
 
 function ChallengeAPI:EID_EnableIntegration(_)
@@ -301,10 +384,12 @@ function ChallengeAPI:EID_EnableIntegration(_)
         ChallengeAPI.Log("EID integration disabled.")
         return
     end
-
-    ChallengeAPI.Log("EID integration enabled.")
+    
     injectEIDCategory()
     ChallengeAPI:EID_ApplyLanguageData()
+    ChallengeAPI:EID_AddCachedIcons()
+    
+    ChallengeAPI.EID_HasInitialized = true
 
-    ChallengeAPI.Log("ChallengeAPI: Injected EID language data.")
+    ChallengeAPI.Log("EID integration enabled.")
 end

@@ -13,6 +13,8 @@ function ChallengeAPI:GetCurrentChallenge()
         return nil
     end
 
+    ChallengeAPI.Log("Current challenge id: " .. challenge)
+
     return ChallengeAPI:GetChallengeById(challenge)
 end
 

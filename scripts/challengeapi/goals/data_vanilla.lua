@@ -48,7 +48,9 @@ function ChallengeAPI:RegisterVanillaGoals()
    --   - [X] Prevent the trapdoor to Womb from opening. (Already done, thanks Tyrone!)
    --   - [X] Prevent the player from softlocking themselves in the boss fight room? (Already done, thanks Tyrone!)
    local beast = ChallengeAPI:RegisterGoal("beast", "The Beast", LevelStage.STAGE7, ChallengeAPI.GoalAltPaths.DEVIL, ChallengeAPI.GoalSecretPaths.NORMAL, false)
-   beast:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/beast.png"), 16, 16)
+   -- TODO: Switch this back after EID updates
+   -- beast:SetEIDIcon("{{Beast}}")
+   beast:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/beast.png"), 16, 16, true)
 end
 
 -- Register some basic custom goals that are easy to define by hand.

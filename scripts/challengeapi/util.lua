@@ -11,6 +11,14 @@ function ChallengeAPI.Util.SplitString(inputstr, sep)
     return t
 end
 
+function ChallengeAPI.Util.TableLength(tbl)
+    local count = 0
+    for _ in pairs(tbl) do
+        count = count + 1
+    end
+    return count
+end
+
 function ChallengeAPI.Util.TearDelayToFireRate(delay)
     return 30 / (delay + 1)
 end
@@ -66,5 +74,6 @@ function ChallengeAPI.Util.LoadGoalIcon(iconPath)
     sprite:Load("gfx/ui/challenges/goals/goal.anm2", false)
     sprite:ReplaceSpritesheet(0, iconPath)
     sprite:LoadGraphics()
+    sprite:Play("Idle", true)
     return sprite
 end

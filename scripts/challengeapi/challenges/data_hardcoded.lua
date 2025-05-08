@@ -6,7 +6,7 @@ function ChallengeAPI:RegisterVanillaChallenges()
 
     -- #1: Pitch Black
     local pitchBlack = ChallengeAPI:RegisterChallenge(Challenge.CHALLENGE_PITCH_BLACK, "Pitch Black",
-        PlayerType.PLAYER_ISAAC, "mom")
+        PlayerType.PLAYER_ISAAC, "boss-rush")
     pitchBlack:SetRoomFilter({ RoomType.ROOM_SHOP })
     pitchBlack:SetCurse({ LevelCurse.CURSE_OF_DARKNESS, LevelCurse.CURSE_OF_THE_UNKNOWN })
     pitchBlack:SetCurseFilter({ LevelCurse.CURSE_OF_LABYRINTH, LevelCurse.CURSE_OF_THE_LOST })

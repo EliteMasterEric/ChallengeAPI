@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-    <name>ChallengeAPI</name>
+    <name>[REP(+)] ChallengeAPI</name>
     <directory>challengeapi</directory>
     <id>999999999</id>
-    <description>A mod to help create and manage custom challenges.</description>
+    <description>A library mod to help create and manage custom challenges.</description>
     <version>1.0</version>
-    <visibility>Private</visibility>
+    <visibility>Public</visibility>
     <tag id="Challenges"/>
+    <tag id="Lua"/>
+    <tag id="Tweaks"/>
 </metadata>

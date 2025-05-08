@@ -14,7 +14,7 @@
 ---@field stageTypes table<LevelStage, integer> A table of stage types which should be forced during generation.
 ---@field eidIcon string? The icon to display for this challenge goal next to the name in the EID description.
 ---@field eidNotes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
----@field goalIcon Sprite The icon to display for this challenge goal in the user interface.
+---@field goalIcon Sprite? The icon to display for this challenge goal in the user interface.
 local Goal = {}
 Goal.__index = Goal
 
@@ -55,6 +55,7 @@ function Goal.new(id, name, endStage, altPath, secretPath, megaSatan)
     }
     self.eidIcon = nil
     self.eidNotes = {}
+    self.goalIcon = nil
     return self
 end
 
@@ -152,7 +153,7 @@ end
 ---@param icon Sprite
 ---@param width integer Width of the icon, in pixels. Defaults to 16.
 ---@param height integer Height of the icon, in pixels. Defaults to 16.
----@param makeEIDIcon boolean Whether to register the icon in EID. Defaults to true.
+---@param makeEIDIcon boolean? Whether to register the icon in EID. Defaults to true.
 function Goal:SetGoalIcon(icon, width, height, makeEIDIcon)
     makeEIDIcon = makeEIDIcon or false
 
@@ -164,7 +165,8 @@ function Goal:SetGoalIcon(icon, width, height, makeEIDIcon)
         local leftOffset = 0
         local topOffset = 0
 
-        EID:addIcon("Goal"..self.id, "idle", -1, width, height, icon, leftOffset, topOffset, self.goalIcon)
+        ChallengeAPI:EID_AddIcon("Goal"..self.id, width, height, icon, leftOffset, topOffset)
+        self:SetEIDIcon("{{Goal"..self.id.."}}")
     end
 end
 

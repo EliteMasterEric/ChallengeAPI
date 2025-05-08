@@ -4,10 +4,11 @@ ChallengeAPI = mod
 ChallengeAPI.CALLBACK_POST_LOAD = "CHALLENGEAPI_POST_LOAD"
 
 ---@diagnostic disable-next-line: undefined-global
-ChallengeAPI.isRepentancePlus = REPENTANCE_PLUS or FontRenderSettings ~= nil -- True if we are on Repentance+, the latest DLC
-ChallengeAPI.isRepentance = REPENTANCE or ChallengeAPI.isRepentancePlus -- True if we are on Repentance OR Repentance+
-ChallengeAPI.isAfterbirthPlus = not ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True only if we are on Afterbirth+ (no other DLCs enabled)
-ChallengeAPI.isRepentanceOnly = ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True if we are on Repentance but NOT Repentance+
+ChallengeAPI.IsRepentancePlus = REPENTANCE_PLUS or FontRenderSettings ~= nil -- True if we are on Repentance+, the latest DLC
+ChallengeAPI.IsRepentance = REPENTANCE or ChallengeAPI.isRepentancePlus -- True if we are on Repentance OR Repentance+
+ChallengeAPI.IsAfterbirthPlus = not ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True only if we are on Afterbirth+ (no other DLCs enabled)
+ChallengeAPI.IsRepentanceOnly = ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True if we are on Repentance but NOT Repentance+
+ChallengeAPI.IsREPENTOGON = REPENTOGON ~= nil
 
 ChallengeAPI.Languages = {"en_us"}
 
@@ -34,13 +35,25 @@ include('scripts.challengeapi.challenges.data_config')
 include('scripts.challengeapi.challenges.data_hardcoded')
 
 -- Challenge Goal Hooks
-include('scripts.challengeapi.goals.hooks.ascent')
-include('scripts.challengeapi.goals.hooks.beast')
-include('scripts.challengeapi.goals.hooks.stage_type')
+-- Work in progress, disabled for now
+-- include('scripts.challengeapi.goals.hooks.ascent')
+-- include('scripts.challengeapi.goals.hooks.beast')
+-- include('scripts.challengeapi.goals.hooks.stage_type')
 
 -- Custom HUD elements
-include('scripts.challengeapi.hud.challenge')
+include('scripts.challengeapi.hud.challenge_goal')
 include('scripts.challengeapi.hud.eid')
+
+-- Called after all mods are loaded, in case of load order issues.
+local function onPostModsLoaded(_)
+  ChallengeAPI:EID_EnableIntegration()
+  
+  include('scripts.challengeapi.integration.index')
+end
+
+local function onEIDPostLoad()
+  ChallengeAPI:EID_EnableIntegration()
+end
 
 local function initialize()
   ChallengeAPI.Log("Starting ChallengeAPI...")
@@ -64,19 +77,17 @@ local function initialize()
   ChallengeAPI:RegisterChallengeCorrections()
 
   ChallengeAPI.Log("ChallengeAPI has finished loading.")
-end
-
--- Called after all mods are loaded, in case of load order issues.
-local function onPostModsLoaded(_)
-  ChallengeAPI:EID_EnableIntegration()
   
-  Isaac.RunCallback(ChallengeAPI.CALLBACK_POST_LOAD)
-end
+  -- TODO: Enable once EID updates
+  -- ChallengeAPI:AddCallback("EID_POST_LOAD", onEIDPostLoad)
 
-if REPENTOGON then
-  ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_MODS_LOADED, CallbackPriority.DEFAULT, onPostModsLoaded)
-else
-  ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.DEFAULT, onPostModsLoaded)
+  if REPENTOGON then
+    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_MODS_LOADED, CallbackPriority.DEFAULT, onPostModsLoaded)
+  else
+    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.DEFAULT, onPostModsLoaded)
+  end
+
+  Isaac.RunCallback(ChallengeAPI.CALLBACK_POST_LOAD)
 end
 
 initialize()
