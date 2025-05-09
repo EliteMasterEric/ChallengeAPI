@@ -45,7 +45,16 @@ include('scripts.challengeapi.hud.challenge_goal')
 include('scripts.challengeapi.hud.eid')
 
 -- Called after all mods are loaded, in case of load order issues.
+local didPostModLoad = false
 local function onPostModsLoaded(_)
+  if didPostModLoad then
+    return
+  else
+    didPostModLoad = true
+  end
+
+  ChallengeAPI.Log("Loading additional integrations...")
+
   ChallengeAPI:EID_EnableIntegration()
   
   include('scripts.challengeapi.integration.index')
@@ -81,13 +90,22 @@ local function initialize()
   -- TODO: Enable once EID updates
   -- ChallengeAPI:AddCallback("EID_POST_LOAD", onEIDPostLoad)
 
-  if REPENTOGON then
-    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_MODS_LOADED, CallbackPriority.DEFAULT, onPostModsLoaded)
-  else
-    ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.DEFAULT, onPostModsLoaded)
-  end
-
   Isaac.RunCallback(ChallengeAPI.CALLBACK_POST_LOAD)
 end
 
 initialize()
+
+-- Do this after mods are loaded.
+if REPENTOGON then
+  ChallengeAPI:AddCallback(ModCallbacks.MC_POST_MODS_LOADED, onPostModsLoaded)
+else
+  ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, onPostModsLoaded)
+end
+
+local function onPostUpdate(mod)
+  if not didPostModLoad then
+    onPostModsLoaded(mod)
+  end
+end
+
+ChallengeAPI:AddCallback(ModCallbacks.MC_POST_UPDATE, onPostUpdate)
