@@ -2,10 +2,10 @@
 <metadata>
     <name>[REP(+)] ChallengeAPI</name>
     <directory>challengeapi</directory>
-    <id>999999999</id>
+    <id>3478225226</id>
     <description>A library mod to help create and manage custom challenges.</description>
-    <version>1.0</version>
-    <visibility>Public</visibility>
+    <version>1.1</version>
+    <visibility>Friends Only</visibility>
     <tag id="Challenges"/>
     <tag id="Lua"/>
     <tag id="Tweaks"/>
