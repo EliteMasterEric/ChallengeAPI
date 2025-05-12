@@ -8,5 +8,7 @@
     "Lua.lint.enable": true,
 
     // Tell Lua to assume these global variables exist
-    "Lua.diagnostics.globals": [],
+    "Lua.diagnostics.globals": [
+        "BirthcakeRebaked"
+    ],
 }

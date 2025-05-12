@@ -1,0 +1,7 @@
+.git
+.gitignore
+.vscode/
+art/
+docs/
+.luacheck
+.luarc.json
