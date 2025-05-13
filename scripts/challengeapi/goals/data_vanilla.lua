@@ -45,12 +45,12 @@ function ChallengeAPI:RegisterVanillaGoals()
    -- Defeat The Beast in Home
    -- May require some custom functionality:
    --   - [X] Override the boss to ensure the trophy spawns.
-   --   - [X] Prevent the trapdoor to Womb from opening. (Already done, thanks Tyrone!)
-   --   - [X] Prevent the player from softlocking themselves in the boss fight room? (Already done, thanks Tyrone!)
-   local beast = ChallengeAPI:RegisterGoal("beast", "The Beast", LevelStage.STAGE7, ChallengeAPI.GoalAltPaths.DEVIL, ChallengeAPI.GoalSecretPaths.NORMAL, false)
+   --   - [] Ensure both Polaroid and Negative spawn
+   local beast = ChallengeAPI:RegisterGoal("beast", "The Beast", LevelStage.STAGE8, ChallengeAPI.GoalAltPaths.BOTH, ChallengeAPI.GoalSecretPaths.NORMAL, false)
    -- TODO: Switch this back after EID updates
    -- beast:SetEIDIcon("{{Beast}}")
    beast:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/beast.png"), 16, 16, true)
+   beast:SetMustFightBeast(true)
 end
 
 -- Register some basic custom goals that are easy to define by hand.

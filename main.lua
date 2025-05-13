@@ -35,10 +35,9 @@ include('scripts.challengeapi.challenges.data_config')
 include('scripts.challengeapi.challenges.data_hardcoded')
 
 -- Challenge Goal Hooks
--- Work in progress, disabled for now
--- include('scripts.challengeapi.goals.hooks.ascent')
--- include('scripts.challengeapi.goals.hooks.beast')
--- include('scripts.challengeapi.goals.hooks.stage_type')
+include('scripts.challengeapi.goals.hooks.beast')
+include('scripts.challengeapi.goals.hooks.polaroid_negative')
+include('scripts.challengeapi.goals.hooks.trapdoors')
 
 -- Custom HUD elements
 include('scripts.challengeapi.hud.challenge_goal')

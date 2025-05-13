@@ -11,4 +11,6 @@
     "Lua.diagnostics.globals": [
         "BirthcakeRebaked"
     ],
+
+    "gitlens.codeLens.enabled": false
 }

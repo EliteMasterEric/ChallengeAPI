@@ -6,6 +6,7 @@
 ---@field name string
 ---@field playerType PlayerType
 ---@field goalId string The ID for the ChallengeAPI goal corresponding to this challenge.
+---@field enableHooks boolean Whether custom ChallengeAPI goal hooks should be enabled for this challenge.
 ---@field isHardMode boolean Whether this challenge is in Hard Mode
 ---@field startingCollectibles string[] A list of all collectibles the player starts with
 ---@field startingPocketActives string[] A list of all pocket actives the player starts with
@@ -45,6 +46,7 @@ function ChallengeParams.new(id, name, playerType, goalId)
     self.goalId = goalId
 
     -- Leave these at their defaults until the function is called.
+    self.enableHooks = true
     self.isHardMode = false
     self.startingCollectibles = {}
     self.startingCollectiblesEsau = {}
@@ -77,6 +79,11 @@ end
 -- Modifies the challenge goal for this challenge.
 function ChallengeParams:SetGoal(goal)
     self.goalId = goal.id
+end
+
+-- Modifies whether this challenge uses custom ChallengeAPI functionality.
+function ChallengeParams:SetEnableHooks(value)
+    self.enableHooks = value
 end
 
 -- Modifies whether this challenge is in Hard Mode.

@@ -4,14 +4,19 @@
 ---@class Goal
 ---@field id string An internal ID for the challenge goal.
 ---@field name string The name of the challenge goal (as displayed in the challenge description).
+---
 ---@field endStage LevelStage The level stage value corresponding to the challenge goal.
 ---@field altPath GoalAltPaths Whether this challenge goal requires you to visit the alt path.
 ---@field secretPath GoalSecretPaths Whether this challenge goal requires you to visit the secret path.
+---
 ---@field mustFightMegaSatan boolean Whether this challenge goal requires you to beat Mega Satan, locking out the other boss fights on the floor.
 ---@field mustFightBeast boolean Whether this challenge goal requires you to beat The Beast. If false, the trophy will spawn when beating Dogma.
+---@field momDoorMode GoalMomDoorMode How this challenge goal should behave in relation to Hush. Alter this with Goal:SetHushMode.
 ---@field hushMode GoalHushMode How this challenge goal should behave in relation to Hush. Alter this with Goal:SetHushMode.
 ---@field bossRushMode GoalBossRushMode How this challenge goal should behave in relation to Boss Rush. Alter this with Goal:SetBossRushMode.
+---
 ---@field stageTypes table<LevelStage, integer> A table of stage types which should be forced during generation.
+---
 ---@field eidIcon string? The icon to display for this challenge goal next to the name in the EID description.
 ---@field eidNotes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
 ---@field goalIcon Sprite? The icon to display for this challenge goal in the user interface.
@@ -107,17 +112,13 @@ end
 
 -- Enable the The Beast fight.
 -- Requires the end stage to be Home (`LevelStage.STAGE8`).
-function Goal:EnableBeastFight()
+-- NOTE: If this is false and the end stage is Home, hooks for 
+function Goal:SetMustFightBeast(value)
     -- Validation.
-    if self.endStage ~= LevelStage.STAGE8 then
-        error("Goal:EnableBeastFight() should only be called on challenges ending at Home.")
+    if value and self.endStage ~= LevelStage.STAGE8 then
+        error("Goal:SetMustBeastFight() should only be called on challenges ending at Home.")
     end
-    self.mustFightBeast = true
-end
-
--- Disable the The Beast fight. The trophy will spawn when defeating Dogma.
-function Goal:DisableBeastFight()
-    self.mustFightBeast = false
+    self.mustFightBeast = value
 end
 
 ---Specify additional line of description for this goal,

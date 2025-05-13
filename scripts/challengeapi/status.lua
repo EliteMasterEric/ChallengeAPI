@@ -30,3 +30,15 @@ function ChallengeAPI:GetCurrentChallengeGoal()
     return challenge:FetchGoal()
 end
 
+-- Returns true if any of ChallengeAPI's hooks should be used for this challenge.
+-- Use challenge:SetEnableHooks(false) to disable ALL custom tweaks and bug fixes
+-- provided by ChallengeAPI. Useful for maintaining mod compatibility.
+function ChallengeAPI:AreHooksActive()
+    local challenge = ChallengeAPI:GetCurrentChallenge()
+    -- If we aren't in a challenge, no hooks.
+    if challenge == nil then
+        return false
+    end
+
+    return challenge.enableHooks
+end

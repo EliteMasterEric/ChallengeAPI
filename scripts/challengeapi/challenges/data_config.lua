@@ -157,7 +157,7 @@ local function registerChallengeFromConfigData(entry)
     ---@type ChallengeParams
     local challenge = ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
             
-    challenge:SetHardMode(isHardMode)
+    challenge:SetIsHardMode(isHardMode)
     challenge:SetStartingCollectibles(startingCollectibles)
     challenge:SetRemovedCollectibles(removedCollectibles)
     challenge:SetStartingTrinkets(startingTrinkets)

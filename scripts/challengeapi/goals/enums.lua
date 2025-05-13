@@ -10,7 +10,7 @@ ChallengeAPI.GoalAltPaths = {
     ANGEL = 1,
 
     -- Both the Polaroid and the Negative will appear when defeating Mom.
-    -- Only the corresponding path's door will appear when defeating Mom's Heart.
+    -- Both the beam and the trapdoor will appear when defeating Mom's Heart.
     BOTH = 2,
 
     -- Only the Polaroid will appear when defeating Mom.
@@ -25,10 +25,22 @@ ChallengeAPI.GoalAltPaths = {
     -- Only the opposite door will appear when defeating Mom's Heart (thus forcing the run to stop early).
     BOTH_INVERSE = 6,
 
+    -- Neither the Polaroid nor the Negative will appear.
+    -- Only the trapdoor to Sheol will appear when defeating Mom's Heart.
+    DEVIL_NOPE = 7,
+
+    -- Neither the Polaroid nor the Negative will appear.
+    -- Only the beam to Cathedral will appear when defeating Mom's Heart.
+    ANGEL_NOPE = 8,
+
+    -- Neither the Polaroid nor the Negative will appear.
+    -- Both the beam and the trapdoor will appear when defeating Mom's Heart.
+    BOTH_NOPE = 9,
+
     -- Both the Polaroid and the Negative will appear when defeating Mom.
     -- Both the trapdoor to Sheol and the beam to Cathedral will appear when defeating Mom's Heart.
     -- Thus, the player can choose either path, potentially forcing the run to stop early.
-    ANY = 7,
+    ANY = 10,
 }
 
 -- Represents the choices provided when beating the main basement floors.
@@ -41,7 +53,7 @@ ChallengeAPI.GoalSecretPaths = {
     SECRET = 1,
 
     -- Both the normal path and the secret path will appear, and you can switch paths as you like (similar to a normal run).
-    -- Since the player may not have visited
+    -- Make sure to configure the rest of your goal correctly so you can't get softlocked!
     ANY = 2,
 }
 
@@ -77,3 +89,14 @@ ChallengeAPI.GoalBossRushMode = {
     KILL = 3,
 }
 
+---@enum GoalMomDoorMode
+ChallengeAPI.GoalMomDoorMode = {
+    -- The door out of the Mom boss fight on Depths/Mausoleum stays closed upon clearing the fight.
+    NORMAL = 0,
+
+    -- The door out of the Mom boss fight opens, allowing you to move in and out of the room as you see fit.
+    KEEP_OPEN = 1,
+    
+    -- The door out of the Mom boss fight opens once upon completing the fight. This lets you leave, but if you re-enter, you won't be able to leave again.
+    OPEN_ONCE = 2,
+}

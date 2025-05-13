@@ -25,30 +25,48 @@ local beastDefeatFrame = nil
 
 local TROPHY_SPAWN_DELAY_FRAMES = 2.5 * 30 -- 2.5 seconds at 30fps
 
+-- Determine whether the hooks in this module are valid for the current challenge.
+---@return boolean Whether the hooks are valid.
+local function isHookValid()
+    if not ChallengeAPI:AreHooksActive() then
+        return false
+    end
+
+    local goal = ChallengeAPI:GetCurrentChallengeGoal()
+    if goal == nil then
+        return false
+    end
+
+    return goal.mustFightBeast
+end
+
 -- Checks for and removes all stalagtites, souls, and rocks spawned by the Beast.
 local function killAllBeastBullets()
-  -- Check for and kill stalagtites
-  for _,stalactite in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_STALACTITE)) do
-      stalactite:Die()
-  end
+    -- Check for and kill stalagtites
+    for _, stalactite in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_STALACTITE)) do
+        stalactite:Die()
+    end
 
-  -- Check for and kill Beast souls
-  for _,beastSoul in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_BEAST_SOUL)) do
-      beastSoul:Die()
-  end
+    -- Check for and kill Beast souls
+    for _, beastSoul in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_BEAST_SOUL)) do
+        beastSoul:Die()
+    end
 
-  -- Check for and kill Beast rocks
-  for _,beastRock in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_BEAST_ROCK_PROJECTILE)) do
-      beastRock:Die()
-  end
+    -- Check for and kill Beast rocks
+    for _, beastRock in ipairs(Isaac.FindByType(EntityType.ENTITY_BEAST, VARIANT_BEAST_ROCK_PROJECTILE)) do
+        beastRock:Die()
+    end
 end
 
 -- Called as the Beast dies, but before the death animation.
 ---@param entity EntityNPC
 local function onBeastPreDeathAnim(mod, entity)
+    if not isHookValid() then
+        return
+    end
     if entity.Type == EntityType.ENTITY_BEAST and entity.Variant == 0 then
         ChallengeAPI.Log("Beast (" .. entity.Variant .. ") starting to die!")
-        
+
         local beastFlipX = entity.FlipX
 
         -- Remove the real beast so it doesn't play its death animation.
@@ -65,16 +83,16 @@ local function onBeastPreDeathAnim(mod, entity)
         invisibleBeast.Visible = false
         invisibleBeast.State = 3 -- Idle state
         invisibleBeast:Update()
-        
+
         isBeastComplete = true
         beastDefeatFrame = Game():GetFrameCount()
-        
+
         -- Spawn a fake effect which will be used to play the death animation.
         local fakeBeast = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.DEVIL, 0, entity.Position, Vector.Zero, nil)
         fakeBeast.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
         fakeBeast:GetSprite():Load(invisibleBeast:GetSprite():GetFilename(), true)
         fakeBeast:GetSprite():Play("Death", true)
-        fakeBeast.FlipX = beastFlipX -- Make the Beast face the correct way.
+        fakeBeast.FlipX = beastFlipX              -- Make the Beast face the correct way.
         fakeBeast.Velocity = BEAST_FINAL_VELOCITY -- Sink into the lava so we don't have to end the animation properly.
 
         -- Play the Beast death SFX
@@ -89,40 +107,46 @@ end
 -- Called whenever the Beast is about to perform a game update.
 ---@param entity EntityNPC
 local function onBeastPreUpdate(mod, entity)
-  if entity.Type == EntityType.ENTITY_BEAST and entity.Variant == 0 then
-    if isBeastComplete then
-      -- Force the Beast into the Idle state (preventing it from charging),
-      -- then return true to prevent default AI updates.
-      entity.State = 3
-      return true
+    if not isHookValid() then
+        return
     end
-  else
-  end
+    if entity.Type == EntityType.ENTITY_BEAST and entity.Variant == 0 then
+        if isBeastComplete then
+            -- Force the Beast into the Idle state (preventing it from charging),
+            -- then return true to prevent default AI updates.
+            entity.State = 3
+            return true
+        end
+    else
+    end
 end
 
 local function spawnTrophy()
-  local room = Game():GetRoom()
-  local centerPos = room:GetCenterPos()
-  Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TROPHY, 0, centerPos, Vector.Zero, nil)
+    local room = Game():GetRoom()
+    local centerPos = room:GetCenterPos()
+    Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TROPHY, 0, centerPos, Vector.Zero, nil)
 end
 
 -- Called every frame.
 local function onPostUpdate()
-  -- Timer to spawn the trophy.
-  if isBeastComplete and beastDefeatFrame then
-      local currentFrame = Game():GetFrameCount()
-      if currentFrame - beastDefeatFrame >= TROPHY_SPAWN_DELAY_FRAMES then
-          spawnTrophy()
-          beastDefeatFrame = nil
-      end
-  end
+    if not isHookValid() then
+        return
+    end
+    -- Timer to spawn the trophy.
+    if isBeastComplete and beastDefeatFrame then
+        local currentFrame = Game():GetFrameCount()
+        if currentFrame - beastDefeatFrame >= TROPHY_SPAWN_DELAY_FRAMES then
+            spawnTrophy()
+            beastDefeatFrame = nil
+        end
+    end
 end
 
 -- Reset local variables once the run has completed
 local function onGameEnd(mod)
-  ChallengeAPI.Log("Game is ending...")
-  isBeastComplete = false
-  beastDefeatFrame = nil
+    --ChallengeAPI.Log("Game is ending, resetting Beast status...")
+    isBeastComplete = false
+    beastDefeatFrame = nil
 end
 
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, onBeastPreDeathAnim, EntityType.ENTITY_BEAST)
