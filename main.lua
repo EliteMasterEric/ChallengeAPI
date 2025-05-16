@@ -12,6 +12,9 @@ ChallengeAPI.IsREPENTOGON = REPENTOGON ~= nil
 
 ChallengeAPI.Languages = {"en_us"}
 
+ChallengeAPI.Random = RNG()
+ChallengeAPI.Random:SetSeed(Random(), 0)
+
 -- Base setup
 include('scripts.challengeapi.data')
 include('scripts.challengeapi.log')
@@ -36,7 +39,9 @@ include('scripts.challengeapi.challenges.data_hardcoded')
 
 -- Challenge Goal Hooks
 include('scripts.challengeapi.goals.hooks.beast')
+include('scripts.challengeapi.goals.hooks.mom_fight')
 include('scripts.challengeapi.goals.hooks.polaroid_negative')
+include('scripts.challengeapi.goals.hooks.stage_transition')
 include('scripts.challengeapi.goals.hooks.trapdoors')
 
 -- Custom HUD elements
@@ -66,7 +71,7 @@ end
 local function initialize()
   ChallengeAPI.Log("Starting ChallengeAPI...")
 
-  if REPENTOGON then
+  if ChallengeAPI.IsREPENTOGON then
     ChallengeAPI.Log("REPENTOGON integration enabled.")
   else
     ChallengeAPI.Log("REPENTOGON integration disabled. Some challenge descritions may be unavailable.")
@@ -95,7 +100,7 @@ end
 initialize()
 
 -- Do this after mods are loaded.
-if REPENTOGON then
+if ChallengeAPI.IsREPENTOGON then
   ChallengeAPI:AddCallback(ModCallbacks.MC_POST_MODS_LOADED, onPostModsLoaded)
 else
   ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, onPostModsLoaded)

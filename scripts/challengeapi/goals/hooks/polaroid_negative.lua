@@ -4,8 +4,8 @@ local SPAWN_POS_LEFT = Vector(280, 360)
 local SPAWN_POS_SINGLE = Vector(320, 360)
 local SPAWN_POS_RIGHT = Vector(360, 360)
 
--- Determine whether the hooks in this module are valid for the current challenge.
----@return boolean Whether the hooks are valid.
+-- Determine whether the hooks in this module are relevant for the current challenge.
+---@return boolean result Whether the hooks are valid.
 local function isHookValid()
     if not ChallengeAPI:AreHooksActive() then
         return false

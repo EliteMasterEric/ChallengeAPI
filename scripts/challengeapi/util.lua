@@ -27,6 +27,13 @@ function ChallengeAPI.Util.FireRateToTearDelay(fireRate)
     return (30 / fireRate)
 end
 
+
+-- Not actually a PtrHash but good enough for indexing a table
+---@param gridEntity GridEntity
+function ChallengeAPI.Util.GetGridEntityPtrHash(gridEntity)
+    return tostring(GetPtrHash(Game():GetRoom())) .. "~" .. gridEntity:GetGridIndex()
+end
+
 ---Replaces Variable placeholders in string with a given value
 ---Example: "My {1} message" --> "My test message"
 ---varID can be omitted to replace {1} (or pass in a string table, to replace {1}, {2}, etc.)

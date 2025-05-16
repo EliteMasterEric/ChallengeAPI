@@ -24,14 +24,11 @@ local function isHookValid()
     return true
 end
 
--- Not actually a PtrHash but good enough for indexing a table
----@param gridEntity GridEntity
-local function getGridEntityPtrHash(gridEntity)
-    return tostring(GetPtrHash(Game():GetRoom())) .. "~" .. gridEntity:GetGridIndex()
-end
-
 local function isGridPosOccupied(position)
     local gridEntity = Game():GetRoom():GetGridEntityFromPos(position)
+    if gridEntity == nil then
+        return false
+    end
     local isEmpty = (gridEntity.Desc.Type == GridEntityType.GRID_NULL) or (gridEntity.Desc.Type == GridEntityType.GRID_DECORATION)
     return not isEmpty
 end
@@ -42,7 +39,12 @@ local function destroyTrapdoor(gridEntity)
     gridEntity:Destroy(true)
     gridEntity:Update()
 
-    trapdoorCache[getGridEntityPtrHash(gridEntity)] = false
+    trapdoorCache[ChallengeAPI.Util.GetGridEntityPtrHash(gridEntity)] = false
+end
+
+---@param entityEffect EntityEffect
+local function destroyBeam(entityEffect)
+    entityEffect:Kill()
 end
 
 local function spawnTrapdoor(left)
@@ -55,9 +57,9 @@ local function spawnTrapdoor(left)
             ChallengeAPI.Log("Couldn't place trapdoor, no space!")
         end
     else
-        if not isGridPosOccupied(DOOR_POS_UPCENTER) then
+        if not isGridPosOccupied(DOOR_POS_DOWNCENTER) then
+        elseif not isGridPosOccupied(DOOR_POS_UPCENTER) then
             Isaac.GridSpawn(GridEntityType.GRID_TRAPDOOR, 0, DOOR_POS_UPCENTER, true)
-        elseif not isGridPosOccupied(DOOR_POS_DOWNCENTER) then
             Isaac.GridSpawn(GridEntityType.GRID_TRAPDOOR, 0, DOOR_POS_DOWNCENTER, true)
         else
             ChallengeAPI.Log("Couldn't place trapdoor, no space!")
@@ -75,9 +77,9 @@ local function spawnBeam(right)
             ChallengeAPI.Log("Couldn't place beam, no space!")
         end
     else
-        if not isGridPosOccupied(DOOR_POS_UPCENTER) then
+        if not isGridPosOccupied(DOOR_POS_DOWNCENTER) then
             Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HEAVEN_LIGHT_DOOR, 0, DOOR_POS_UPCENTER, Vector(0, 0), nil)
-        elseif not isGridPosOccupied(DOOR_POS_DOWNCENTER) then
+        elseif not isGridPosOccupied(DOOR_POS_UPCENTER) then
             Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HEAVEN_LIGHT_DOOR, 0, DOOR_POS_DOWNCENTER, Vector(0, 0), nil)
         else
             ChallengeAPI.Log("Couldn't place beam, no space!")
@@ -104,16 +106,27 @@ local function checkTrapdoor(_mod, gridEntity)
 
     ChallengeAPI.Log("Current stage: ", currentStage)
     if currentStage == LevelStage.STAGE3_2 then
+        local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
+        local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
+        local isErrorRoomTrapdoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_ERROR_IDX
         local shouldSpawnWombDoor = (not goal.mustFightBeast)
     
         ChallengeAPI.Log("Should spawn womb door? ", shouldSpawnWombDoor)
 
+        if isSecretPathDoor and goal.mustFightBeast then
+            return
+        end
+
         if not shouldSpawnWombDoor then
+            if isErrorRoomTrapdoor or isGenesis then
+                -- TODO: Guarantee this goes to Mausoleum 2
+                spawnBeam(false)
+            end
+
             -- Prevent trapdoor spawn.
             ChallengeAPI.Log("DESTROYING trapdoor")
             destroyTrapdoor(gridEntity)
-            -- This works btw
-            -- spawnBeam(false)
+            
         end
     end
 end
@@ -125,11 +138,38 @@ local function checkBeam(_mod, entityEffect)
         return
     end
 
-    local preventBeam = function()
-        entityEffect:Kill()
+    ChallengeAPI.Log("Beam of light spawned! ", entityEffect.Position)
+
+    local goal = ChallengeAPI:GetCurrentChallengeGoal()
+    if goal == nil then
+        return nil
     end
 
-    ChallengeAPI.Log("Beam of light spawned! ", entityEffect.Position)
+    local currentStage = Game():GetLevel():GetAbsoluteStage()
+
+    ChallengeAPI.Log("Current stage: ", currentStage)
+    if currentStage == LevelStage.STAGE3_2 then
+        local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
+        local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
+        local isErrorRoomTrapdoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_ERROR_IDX
+        local shouldSpawnWombDoor = (not goal.mustFightBeast)
+    
+        ChallengeAPI.Log("Should spawn womb door? ", shouldSpawnWombDoor)
+
+        if isSecretPathDoor and goal.mustFightBeast then
+            return
+        end
+
+        if not shouldSpawnWombDoor then
+            if (isErrorRoomTrapdoor or isGenesis) then
+                return
+            end
+
+            -- Prevent trapdoor spawn.
+            ChallengeAPI.Log("DESTROYING trapdoor")
+            destroyBeam(entityEffect)
+        end
+    end
 end
 
 -- There's no MC_POST_GRID_ENTITY_SPAWN without REPENTOGON,
@@ -145,8 +185,8 @@ local function checkTrapdoors_baseGame(_mod)
         -- Wait until AFTER the gridEntity is initialized.
         -- and gridEntity.Desc.Initialized
         if gridEntity then
-            if gridEntity.Desc.Type == GridEntityType.GRID_TRAPDOOR and not trapdoorCache[getGridEntityPtrHash(gridEntity)] then
-                trapdoorCache[getGridEntityPtrHash(gridEntity)] = true
+            if gridEntity.Desc.Type == GridEntityType.GRID_TRAPDOOR and not trapdoorCache[ChallengeAPI.Util.GetGridEntityPtrHash(gridEntity)] then
+                trapdoorCache[ChallengeAPI.Util.GetGridEntityPtrHash(gridEntity)] = true
                 checkTrapdoor(_mod, gridEntity)
             end
         end
@@ -159,5 +199,11 @@ local function onGameEnd(mod)
 end
 
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, checkBeam, EffectVariant.HEAVEN_LIGHT_DOOR)
-ChallengeAPI:AddCallback(ModCallbacks.MC_POST_UPDATE, checkTrapdoors_baseGame)
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GAME_END, onGameEnd)
+
+if ChallengeAPI.IsREPENTOGON then
+    ---@diagnostic disable-next-line: undefined-field
+    ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GRID_ENTITY_SPAWN, checkTrapdoor, GridEntityType.GRID_TRAPDOOR)
+else
+    ChallengeAPI:AddCallback(ModCallbacks.MC_POST_UPDATE, checkTrapdoors_baseGame)
+end

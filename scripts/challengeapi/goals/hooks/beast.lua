@@ -25,7 +25,7 @@ local beastDefeatFrame = nil
 
 local TROPHY_SPAWN_DELAY_FRAMES = 2.5 * 30 -- 2.5 seconds at 30fps
 
--- Determine whether the hooks in this module are valid for the current challenge.
+-- Determine whether the hooks in this module are relevant for the current challenge.
 ---@return boolean Whether the hooks are valid.
 local function isHookValid()
     if not ChallengeAPI:AreHooksActive() then

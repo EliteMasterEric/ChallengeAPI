@@ -44,7 +44,7 @@ local function debug_kill_dogma(_, cmd, args)
         if dogma.Variant == VARIANT_DOGMA_STAGE_1 then
             dogma:GetSprite():SetFrame("Transition", 81)
         end
-        if REPENTOGON then
+        if ChallengeAPI.IsREPENTOGON then
             Isaac.CreateTimer(function()
                 for _,dogmaStage2 in ipairs(Isaac.FindByType(EntityType.ENTITY_DOGMA, VARIANT_DOGMA_STAGE_2)) do
                     dogmaStage2:GetSprite().PlaybackSpeed = 50
@@ -117,7 +117,7 @@ registerCommand(debug_count_challenges, "count_challenges")
 registerCommand(debug_count_goals, "count_goals")
 registerCommand(debug_capi_initialize, "capi_initialize")
 
-if REPENTOGON then
+if ChallengeAPI.IsREPENTOGON then
     -- Add console commands to autocomplete
     Console.RegisterCommand("kill_horseman", "Kill all the Ultra Horsemen on screen right now.", "kill_horseman ", false, AutocompleteType.NONE)
     Console.RegisterCommand("kill_dogma", "Kill Dogma (both stages).", "kill_dogma", false, AutocompleteType.NONE)
