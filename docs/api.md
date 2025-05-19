@@ -43,10 +43,10 @@ local goal = ChallengeAPI:RegisterGoal(id, name, endStage, altPath, secretPath, 
     * If another goal with the same ID is registered, the new goal will override the old one.
 * `name` - The English readable name of the challenge goal. Used for challenge descriptions.
 * `endStage` - The `LevelStage` corresponding to the challenge goal. For example, `LevelStage.STAGE4_2` for Mom's Heart.
-* `altPath` - The `ChallengeAPI.GoalAltPaths` enum value corresponding to the challenge goal.
-    * For example, `ChallengeAPI.GoalAltPaths.DEVIL` to lock the player into Sheol, `ChallengeAPI.GoalAltPaths.ANGEL` to lock the player into Cathedral, etc.
-* `secretPath` - The `ChallengeAPI.GoalSecretPaths` enum value corresponding to the challenge goal.
-    * For example, `ChallengeAPI.GoalSecretPaths.NORMAL` to lock the player into the normal path, `ChallengeAPI.GoalSecretPaths.SECRET` to lock the player into the secret Repentance path, etc.
+* `altPath` - The `ChallengeAPI.Enum.GoalAltPaths` enum value corresponding to the challenge goal.
+    * For example, `ChallengeAPI.Enum.GoalAltPaths.DEVIL` to lock the player into Sheol, `ChallengeAPI.Enum.GoalAltPaths.ANGEL` to lock the player into Cathedral, etc.
+* `secretPath` - The `ChallengeAPI.Enum.GoalSecretPaths` enum value corresponding to the challenge goal.
+    * For example, `ChallengeAPI.Enum.GoalSecretPaths.NORMAL` to lock the player into the normal path, `ChallengeAPI.Enum.GoalSecretPaths.SECRET` to lock the player into the secret Repentance path, etc.
 * `megaSatan` - Whether this challenge goal requires you to beat Mega Satan.
     * If `true`, automatically grants the Key Pieces and disables the Lamb/??? fight.
 
@@ -75,8 +75,8 @@ local goal = ChallengeAPI:GetGoalByChallengeParams(endStage, altPath, secretPath
 **Parameters**
 
 * `endStage` - The `LevelStage` corresponding to the challenge goal.
-* `altPath` - The `ChallengeAPI.GoalAltPaths` enum value corresponding to the challenge goal.
-* `secretPath` - The `ChallengeAPI.GoalSecretPaths` enum value corresponding to the challenge goal.
+* `altPath` - The `ChallengeAPI.Enum.GoalAltPaths` enum value corresponding to the challenge goal.
+* `secretPath` - The `ChallengeAPI.Enum.GoalSecretPaths` enum value corresponding to the challenge goal.
 * `megaSatan` - Whether this challenge goal requires you to beat Mega Satan.
 
 **Returns**
@@ -87,7 +87,7 @@ local goal = ChallengeAPI:GetGoalByChallengeParams(endStage, altPath, secretPath
 
 A ChallengeParams is a data structure representing a playable challenge. It provides a set of functions for interacting with the challenge's parameters, including the goal and other information.
 
-If REPENTOGON is installed, ChallengeAPI will automatically register each challenge from the `challenges.xml` file, and define their basic parameters. Otherwise, you will have to register your custom challenges manually in order for them to work with ChallengeAPI.
+If the user has REPENTOGON is installed, ChallengeAPI will automatically register each challenge from the `challenges.xml` file, and define their basic parameters. Otherwise, you will have to register your custom challenges manually in order for them to work with ChallengeAPI.
 
 If you want to change the goal for a challenge, retrieve it using `ChallengeAPI:GetChallengeById` or `ChallengeAPI:GetChallengeByName`, and then use `ChallengeParams:SetGoal` to set a new goal. Don't fetch the goal and modify it directly, or you may mess up other challenges!
 
@@ -107,7 +107,7 @@ challenge:SetGoal(goal)
 
 ```xml
 <!-- Make sure your endstage and other parameters are still correct! -->
-<challenge name="My Custom Challenge" startingitems="123,456" endstage="6" capigoal="my-custom-goal" />
+<challenge name="My Custom Challenge" startingitems="123,456" endstage="6" chalapigoal="my-custom-goal" />
 ```
 
 **Parameters**
@@ -231,20 +231,18 @@ challenge:SetStartingCard(Card.CARD_)
 
 * `card` - The `Card` to set as the starting card. Pass `Card.CARD_RANDOM` to select a randomized card.
 
-### ChallengeParams:SetStartingPill
+### ChallengeParams:SetStartingPills
 
-Modifies the starting pill.
-
-Note this parameter only changes how the challenge is displayed on the HUD, and does not modify in-game behavior. Make sure to set the proper value for `startingpill` in your `challenges.xml` entry appropriately.
+Modifies the starting pills. Pills beyond the first will be spawned as additional pills by ChallengeAPI.
 
 ```lua
 local challenge = ChallengeAPI:GetChallengeById("my-custom-challenge")
-challenge:SetStartingPill(PillEffect.PILLEFFECT_)
+challenge:SetStartingPills({PillEffect.PILLEFFECT_})
 ```
 
 **Parameters**
 
-* `pill` - The `PillEffect` to set as the starting pill. Pass `PillEffect.PILLEFFECT_NULL` to select a randomized pill (there's no `PILLEFFECT_RANDOM`, sorry!)
+* `pills` - The `PillEffect` to set as the starting pill. Pass `PillEffect.PILLEFFECT_NULL` to select a randomized pill (there's no `PILLEFFECT_RANDOM`, sorry!)
 
 ### ChallengeParams:SetStartingMaxHearts
 

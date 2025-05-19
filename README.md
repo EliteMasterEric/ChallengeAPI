@@ -9,19 +9,24 @@ A library mod for providing custom challenge-related functionality, including cu
     - (REPENTOGON only) Descriptions are automatically generated for custom challenges, and can be edited with a straightforward API.
 - Replaces the challenge goal HUD icon with a customizable interface.
     - This allows you to create custom challenge goals and display them in the challenge HUD and in the EID description.
+- Built-in fixes for challenge goals which would otherwise have major issues:
+    - The Beast (trophy spawning and softlock prevention)
+- Built-in fixes for challenge XML attributes which would otherwise have major issues:
+    - `startingpill` (properly supports Little Baggy)
 
 ## Upcoming Features
 
 - Built-in fixes for the following challenge goals:
-    - [] Beast
     - [] Delirium
     - [] Hush
     - [] Boss Rush
     - [] Mausoleum II
+- Functionality to force stage types for specific floors
+    - 30 floors of Cellar, anyone?
 - (REPENTOGON only) Custom challenge XML attributes
-    [] startingpocket="collectibleId,commaSeparated"
+    [] startingpocketitems="collectibleId,commaSeparated"
     [] notrinkets=true/false
-    [] startingsmeltedtrinkets="trinketId,commaSeparated"
+    [] startinggulpedtrinkets="trinketId,commaSeparated"
 
 - Known issues:
     [] Challenge goal HUD displays even during cutscenes.

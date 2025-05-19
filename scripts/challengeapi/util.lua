@@ -27,6 +27,32 @@ function ChallengeAPI.Util.FireRateToTearDelay(fireRate)
     return (30 / fireRate)
 end
 
+---Spawns a pill of a given effect.
+---@param effect PillEffect The effect to spawn.
+function ChallengeAPI.Util.SpawnPillByEffect(effect)
+    Isaac.ExecuteCommand("g p" .. tostring(effect))
+end
+
+function ChallengeAPI.Util.SpawnPillByColor(color)
+    Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_PILL, color, Isaac.GetPlayer().Position, Vector.Zero, Isaac.GetPlayer())
+end
+
+---Spawns a pill with a random effect.
+---NOTE: Doesn't respect the current pool.
+---@param useColor boolean? Whether to use a random color (respecting the pill pool) instead of a truly random effect.
+function ChallengeAPI.Util.SpawnRandomPill(useColor)
+    if useColor == nil then
+        useColor = true
+    end
+
+    if useColor then
+        local color = ChallengeAPI.Random:Next() % PillColor.NUM_STANDARD_PILLS
+        ChallengeAPI.Util.SpawnPillByColor(color)
+    else
+        local effect = ChallengeAPI.Random:Next() % PillEffect.NUM_PILL_EFFECTS
+        ChallengeAPI.Util.SpawnPillByEffect(effect)
+    end
+end
 
 -- Not actually a PtrHash but good enough for indexing a table
 ---@param gridEntity GridEntity
@@ -74,6 +100,21 @@ function ChallengeAPI.Util.TableContains(t, value)
         end
     end
     return false
+end
+
+-- Returns a list of all the trapdoors in the room.
+---@return GridEntity[]
+function ChallengeAPI.Util.GetTrapdoors()
+    ---@type GridEntity[]
+    local result = {}
+    local room = Game():GetRoom()
+    for index = 0, room:GetGridSize() - 1, 1 do
+       local grid = room:GetGridEntity(index)
+       if grid ~= nil and grid:GetType() == GridEntityType.GRID_TRAPDOOR then
+            table.insert(result, grid:ToTrapDoor())
+       end
+    end
+    return result
 end
 
 function ChallengeAPI.Util.LoadGoalIcon(iconPath)

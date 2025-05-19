@@ -39,8 +39,8 @@ function Goal.new(id, name, endStage, altPath, secretPath, megaSatan)
     self.secretPath = secretPath
     self.mustFightMegaSatan = megaSatan
     self.mustFightBeast = false
-    self.hushMode = ChallengeAPI.GoalHushMode.NORMAL
-    self.bossRushMode = ChallengeAPI.GoalBossRushMode.NORMAL
+    self.hushMode = ChallengeAPI.Enum.GoalHushMode.NORMAL
+    self.bossRushMode = ChallengeAPI.Enum.GoalBossRushMode.NORMAL
     self.stageTypes = {
         [LevelStage.STAGE1_1] = -1,
         [LevelStage.STAGE1_2] = -1,
@@ -72,12 +72,12 @@ end
 ---@return boolean
 function Goal:MatchesChallengeParams(endStage, altPath, secretPath, megaSatan)
     -- true = Devil path, false = Angel path
-    if (not altPath and self.altPath ~= ChallengeAPI.GoalAltPaths.DEVIL) or (altPath and self.altPath ~= ChallengeAPI.GoalAltPaths.ANGEL) then
+    if (not altPath and self.altPath ~= ChallengeAPI.Enum.GoalAltPaths.DEVIL) or (altPath and self.altPath ~= ChallengeAPI.Enum.GoalAltPaths.ANGEL) then
         return false
     end
 
     -- true = Secret path, false = Normal path
-    if (not secretPath and self.secretPath ~= ChallengeAPI.GoalSecretPaths.NORMAL) or (secretPath and self.secretPath ~= ChallengeAPI.GoalSecretPaths.SECRET) then
+    if (not secretPath and self.secretPath ~= ChallengeAPI.Enum.GoalSecretPaths.NORMAL) or (secretPath and self.secretPath ~= ChallengeAPI.Enum.GoalSecretPaths.SECRET) then
         return false
     end
 
@@ -102,21 +102,27 @@ function Goal:ForceStageType(levelStage, stageType)
     self.stageTypes[levelStage] = stageType
 end
 
+-- While the challenge is active, determine the behavior of the Hush door after the Mom's Heart fight.
 function Goal:SetHushMode(mode)
     self.hushMode = mode
 end
 
+-- While the challenge is active, determine the behavior of the Boss Rush door after the Mom fight.
 function Goal:SetBossRushMode(mode)
     self.bossRushMode = mode
 end
 
--- Enable the The Beast fight.
+-- While the challenge is active, determine the behavior of the door out of the Mom boss fight on Depths 2.
+function Goal:SetMomDoorMode(mode)
+    self.momDoorMode = mode
+end
+
+-- While the challenge is active, enable the The Beast fight.
 -- Requires the end stage to be Home (`LevelStage.STAGE8`).
--- NOTE: If this is false and the end stage is Home, hooks for 
 function Goal:SetMustFightBeast(value)
     -- Validation.
     if value and self.endStage ~= LevelStage.STAGE8 then
-        error("Goal:SetMustBeastFight() should only be called on challenges ending at Home.")
+        error("Goal:SetMustFightBeast() should only be called on challenges ending at Home.")
     end
     self.mustFightBeast = value
 end
@@ -131,7 +137,7 @@ end
 function Goal:BuildDescriptionLines()
     local lines = {}
     
-    if self.secretPath == ChallengeAPI.GoalSecretPaths.SECRET then
+    if self.secretPath == ChallengeAPI.Enum.GoalSecretPaths.SECRET then
         table.insert(lines, ChallengeAPI:Translate("EIDGoalSecretPath"))
         if self.endStage >= LevelStage.STAGE4_1 then
             table.insert(lines, ChallengeAPI:Translate("EIDGoalKnifePieces"))
@@ -206,7 +212,13 @@ end
 ---@return Goal
 function ChallengeAPI:RegisterGoal(id, name, endStage, altPath, secretPath, megaSatan)
     local goal = Goal.new(id, name, endStage, altPath, secretPath, megaSatan)
+    
     ChallengeAPI.goals[goal.id] = goal
+
+    -- Execute the callback.
+    -- TODO: Should this be allowed to prevent registration? How do we handle that?
+    Isaac.RunCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_POST_GOAL_REGISTERED, goal)
+
     return goal
 end
 

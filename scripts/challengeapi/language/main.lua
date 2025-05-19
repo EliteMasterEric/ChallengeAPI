@@ -79,11 +79,11 @@ end
 
 -- Load the contents of each language file in the "languages" directory.
 function ChallengeAPI:LoadLanguageData()
-    ChallengeAPI.Log("Loading language data.")
+    -- ChallengeAPI.Log("Loading language data.")
 
     ChallengeAPI.languageInitialized = true
     for _, language in ipairs(ChallengeAPI.Languages) do
-        ChallengeAPI.Log("Loading language file: " .. language)
+        -- ChallengeAPI.Log("Loading language data: " .. language)
         -- never use require ong
         include("language." .. language)
     end

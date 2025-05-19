@@ -176,37 +176,49 @@ function ChallengeAPI:EID_BuildFullChallengeDescription(player)
             table.insert(description, ChallengeAPI.Util.ReplaceVariableStr(template, {trinket, getTrinketName(trinket)}))
         end
 
-        local cardList = challenge.startingCard
+        local cardList = challenge.startingCards
         if isSecondPlayer then
             -- No startingcard2?
             -- cardList = challenge.startingCardEsau
         end
-        if cardList ~= nil then
-            if cardList == Card.CARD_RANDOM then -- Random card
-                if ChallengeAPI.Util.TableContains(challenge.startingCollectibles, CollectibleType.COLLECTIBLE_STARTER_DECK) then
-                    table.insert(description, ChallengeAPI:Translate("EIDStartingCardRandomMultiple"))
+        if #cardList > 0 then
+            local randomCount = 0
+
+            for _, card in ipairs(cardList) do
+                if card == Card.CARD_RANDOM then
+                    randomCount = randomCount + 1
                 else
-                    table.insert(description, ChallengeAPI:Translate("EIDStartingCardRandom"))
+                    table.insert(description, ChallengeAPI.Util.ReplaceVariableStr(ChallengeAPI:Translate("EIDStartingCard"), {card, getCardName(card)}))
                 end
-            else
-                table.insert(description, ChallengeAPI.Util.ReplaceVariableStr(ChallengeAPI:Translate("EIDStartingCard"), {challenge.startingCard, getCardName(challenge.startingCard)}))
+            end
+
+            if randomCount > 1 then
+                table.insert(description, ChallengeAPI:Translate("EIDStartingCardRandomMultiple"))
+            elseif randomCount == 1 then
+                table.insert(description, ChallengeAPI:Translate("EIDStartingCardRandom"))
             end
         end
     
-        local pillList = challenge.startingPill
+        local pillList = challenge.startingPills
         if isSecondPlayer then
             -- No startingpill2?
             -- pillList = challenge.startingPillEsau
         end
-        if pillList ~= nil then
-            if pillList == PillEffect.PILLEFFECT_NULL then -- Random pill
-                if ChallengeAPI.Util.TableContains(challenge.startingCollectibles, CollectibleType.COLLECTIBLE_LITTLE_BAGGY) then
-                    table.insert(description, ChallengeAPI:Translate("EIDStartingPillRandomMultiple"))
+        if #pillList > 0 then
+            local randomCount = 0
+
+            for _, pill in ipairs(pillList) do
+                if pill == PillEffect.PILLEFFECT_NULL then
+                    randomCount = randomCount + 1
                 else
-                    table.insert(description, ChallengeAPI:Translate("EIDStartingPillRandom"))
+                    table.insert(description, ChallengeAPI.Util.ReplaceVariableStr(ChallengeAPI:Translate("EIDStartingPill"), {pill, getPillName(pill)}))
                 end
-            else
-                table.insert(description, ChallengeAPI.Util.ReplaceVariableStr(ChallengeAPI:Translate("EIDStartingPill"), {getPillName(challenge.startingPill)}))
+            end
+
+            if randomCount > 1 then
+                table.insert(description, ChallengeAPI:Translate("EIDStartingPillRandomMultiple"))
+            elseif randomCount == 1 then
+                table.insert(description, ChallengeAPI:Translate("EIDStartingPillRandom"))
             end
         end
     else

@@ -29,14 +29,14 @@ local function onPostPolaroidSpawn(entity)
 
     local replaceWithNegative = function()
         -- Replace the spawn with a Negative.
-        ChallengeAPI.Log("GoalHook: Replacing Polaroid with Negative")
+        -- ChallengeAPI.Log("GoalHook: Replacing Polaroid with Negative")
         entity:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_NEGATIVE)
         entity:ToPickup().OptionsPickupIndex = 0
     end
 
     local ensurePolaroidIsCentered = function()
         -- Ensure the pickup is centered.
-        ChallengeAPI.Log("GoalHook: Centering Polaroid")
+        -- ChallengeAPI.Log("GoalHook: Centering Polaroid")
         if entity.Position.X ~= SPAWN_POS_SINGLE.X then
             entity.Position = SPAWN_POS_SINGLE
         end
@@ -46,7 +46,7 @@ local function onPostPolaroidSpawn(entity)
     local alsoSpawnNegative = function()
         -- If this pickup is centered, its pair won't spawn, so we need to do work here.
         if entity.Position.X == SPAWN_POS_SINGLE.X then
-            ChallengeAPI.Log("GoalHook: Spawning Negative alongside Polaroid")
+            -- ChallengeAPI.Log("GoalHook: Spawning Negative alongside Polaroid")
             -- Make the current pickup the left option.
             entity.Position = SPAWN_POS_LEFT
             entity:ToPickup().OptionsPickupIndex = 1
@@ -59,21 +59,21 @@ local function onPostPolaroidSpawn(entity)
 
     local removePolaroid = function()
         -- Prevent spawn
-        ChallengeAPI.Log("GoalHook: Removing Polaroid")
+        -- ChallengeAPI.Log("GoalHook: Removing Polaroid")
         entity:Kill()
     end
 
     local switchCase = {
-        [ChallengeAPI.GoalAltPaths.DEVIL] = replaceWithNegative,
-        [ChallengeAPI.GoalAltPaths.ANGEL] = ensurePolaroidIsCentered,
-        [ChallengeAPI.GoalAltPaths.BOTH] = alsoSpawnNegative,
-        [ChallengeAPI.GoalAltPaths.DEVIL_INVERSE] = ensurePolaroidIsCentered,
-        [ChallengeAPI.GoalAltPaths.ANGEL_INVERSE] = replaceWithNegative,
-        [ChallengeAPI.GoalAltPaths.BOTH_INVERSE] = alsoSpawnNegative,
-        [ChallengeAPI.GoalAltPaths.DEVIL_NOPE] = removePolaroid,
-        [ChallengeAPI.GoalAltPaths.ANGEL_NOPE] = removePolaroid,
-        [ChallengeAPI.GoalAltPaths.BOTH_NOPE] = removePolaroid,
-        [ChallengeAPI.GoalAltPaths.ANY] = alsoSpawnNegative
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL] = replaceWithNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL] = ensurePolaroidIsCentered,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH] = alsoSpawnNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL_INVERSE] = ensurePolaroidIsCentered,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL_INVERSE] = replaceWithNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH_INVERSE] = alsoSpawnNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL_NOPE] = removePolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL_NOPE] = removePolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH_NOPE] = removePolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.ANY] = alsoSpawnNegative
     }
 
     local case = switchCase[goal.altPath]
@@ -94,14 +94,14 @@ local function onPostNegativeSpawn(entity)
 
     local replaceWithPolaroid = function()
         -- Replace the spawn with a Polaroid.
-        ChallengeAPI.Log("GoalHook: Replacing Negative with Polaroid")
+        -- ChallengeAPI.Log("GoalHook: Replacing Negative with Polaroid")
         entity:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_POLAROID)
         entity:ToPickup().OptionsPickupIndex = 0
     end
 
     local ensureNegativeIsCentered = function()
         -- Ensure the pickup is centered.
-        ChallengeAPI.Log("GoalHook: Centering Negative")
+        -- ChallengeAPI.Log("GoalHook: Centering Negative")
         if entity.Position.X ~= SPAWN_POS_SINGLE.X then
             entity.Position = SPAWN_POS_SINGLE
         end
@@ -112,7 +112,7 @@ local function onPostNegativeSpawn(entity)
         -- If this pickup is centered, its pair won't spawn, so we need to do work here.
         if entity.Position.X == SPAWN_POS_SINGLE.X then
             -- Make the current pickup the right option.
-            ChallengeAPI.Log("GoalHook: Spawning Polaroid alongside Negative")
+            -- ChallengeAPI.Log("GoalHook: Spawning Polaroid alongside Negative")
             entity.Position = SPAWN_POS_RIGHT
             entity:ToPickup().OptionsPickupIndex = 1
 
@@ -124,21 +124,21 @@ local function onPostNegativeSpawn(entity)
 
     local removeNegative = function()
         -- Prevent spawn
-        ChallengeAPI.Log("GoalHook: Removing Negative")
+        -- ChallengeAPI.Log("GoalHook: Removing Negative")
         entity:Kill()
     end
 
     local switchCase = {
-        [ChallengeAPI.GoalAltPaths.DEVIL] = ensureNegativeIsCentered,
-        [ChallengeAPI.GoalAltPaths.ANGEL] = replaceWithPolaroid,
-        [ChallengeAPI.GoalAltPaths.BOTH] = alsoSpawnPolaroid,
-        [ChallengeAPI.GoalAltPaths.DEVIL_INVERSE] = replaceWithPolaroid,
-        [ChallengeAPI.GoalAltPaths.ANGEL_INVERSE] = ensureNegativeIsCentered,
-        [ChallengeAPI.GoalAltPaths.BOTH_INVERSE] = alsoSpawnPolaroid,
-        [ChallengeAPI.GoalAltPaths.DEVIL_NOPE] = removeNegative,
-        [ChallengeAPI.GoalAltPaths.ANGEL_NOPE] = removeNegative,
-        [ChallengeAPI.GoalAltPaths.BOTH_NOPE] = removeNegative,
-        [ChallengeAPI.GoalAltPaths.ANY] = alsoSpawnPolaroid
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL] = ensureNegativeIsCentered,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL] = replaceWithPolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH] = alsoSpawnPolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL_INVERSE] = replaceWithPolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL_INVERSE] = ensureNegativeIsCentered,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH_INVERSE] = alsoSpawnPolaroid,
+        [ChallengeAPI.Enum.GoalAltPaths.DEVIL_NOPE] = removeNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.ANGEL_NOPE] = removeNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.BOTH_NOPE] = removeNegative,
+        [ChallengeAPI.Enum.GoalAltPaths.ANY] = alsoSpawnPolaroid
     }
 
     local case = switchCase[goal.altPath]

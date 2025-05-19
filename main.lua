@@ -1,14 +1,16 @@
+---@type ModReference
 local mod = RegisterMod("ChallengeAPI", 1)
+---@class ChallengeAPI: ModReference
 ChallengeAPI = mod
 
-ChallengeAPI.CALLBACK_POST_LOAD = "CHALLENGEAPI_POST_LOAD"
+ChallengeAPI.Enum = {}
 
 ---@diagnostic disable-next-line: undefined-global
 ChallengeAPI.IsRepentancePlus = REPENTANCE_PLUS or FontRenderSettings ~= nil -- True if we are on Repentance+, the latest DLC
-ChallengeAPI.IsRepentance = REPENTANCE or ChallengeAPI.isRepentancePlus -- True if we are on Repentance OR Repentance+
-ChallengeAPI.IsAfterbirthPlus = not ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True only if we are on Afterbirth+ (no other DLCs enabled)
-ChallengeAPI.IsRepentanceOnly = ChallengeAPI.isRepentance and not ChallengeAPI.isRepentancePlus -- True if we are on Repentance but NOT Repentance+
-ChallengeAPI.IsREPENTOGON = REPENTOGON ~= nil
+ChallengeAPI.IsRepentance = REPENTANCE or ChallengeAPI.IsRepentancePlus -- True if we are on Repentance OR Repentance+
+ChallengeAPI.IsAfterbirthPlus = not ChallengeAPI.IsRepentance and not ChallengeAPI.IsRepentancePlus -- True only if we are on Afterbirth+ (no other DLCs enabled)
+ChallengeAPI.IsRepentanceOnly = ChallengeAPI.IsRepentance and not ChallengeAPI.IsRepentancePlus -- True if we are on Repentance but NOT Repentance+
+ChallengeAPI.IsREPENTOGON = false -- REPENTOGON ~= nil
 
 ChallengeAPI.Languages = {"en_us"}
 
@@ -18,6 +20,7 @@ ChallengeAPI.Random:SetSeed(Random(), 0)
 -- Base setup
 include('scripts.challengeapi.data')
 include('scripts.challengeapi.log')
+include('scripts.challengeapi.callbacks')
 include('scripts.challengeapi.commands')
 include('scripts.challengeapi.status')
 include('scripts.challengeapi.util')
@@ -38,11 +41,8 @@ include('scripts.challengeapi.challenges.data_config')
 include('scripts.challengeapi.challenges.data_hardcoded')
 
 -- Challenge Goal Hooks
-include('scripts.challengeapi.goals.hooks.beast')
-include('scripts.challengeapi.goals.hooks.mom_fight')
-include('scripts.challengeapi.goals.hooks.polaroid_negative')
-include('scripts.challengeapi.goals.hooks.stage_transition')
-include('scripts.challengeapi.goals.hooks.trapdoors')
+include('scripts.challengeapi.goals.hooks.init')
+include('scripts.challengeapi.goals.hooks.tags.init')
 
 -- Custom HUD elements
 include('scripts.challengeapi.hud.challenge_goal')
@@ -86,7 +86,7 @@ local function initialize()
   
   ChallengeAPI.challengesInitialized = true
   ChallengeAPI:RegisterChallengesFromConfig()
-  -- Regardless if REPENTOGON is enabled, we need to apply corrections and custom descriptions.
+  -- Regardless of whether REPENTOGON is enabled, we need to apply corrections and custom descriptions.
   ChallengeAPI:RegisterChallengeCorrections()
 
   ChallengeAPI.Log("ChallengeAPI has finished loading.")
@@ -94,7 +94,7 @@ local function initialize()
   -- TODO: Enable once EID updates
   -- ChallengeAPI:AddCallback("EID_POST_LOAD", onEIDPostLoad)
 
-  Isaac.RunCallback(ChallengeAPI.CALLBACK_POST_LOAD)
+  Isaac.RunCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_POST_LOADED)
 end
 
 initialize()

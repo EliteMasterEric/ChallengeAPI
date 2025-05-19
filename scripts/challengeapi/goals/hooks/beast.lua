@@ -65,7 +65,7 @@ local function onBeastPreDeathAnim(mod, entity)
         return
     end
     if entity.Type == EntityType.ENTITY_BEAST and entity.Variant == 0 then
-        ChallengeAPI.Log("Beast (" .. entity.Variant .. ") starting to die!")
+        -- ChallengeAPI.Log("Beast (" .. entity.Variant .. ") starting to die!")
 
         local beastFlipX = entity.FlipX
 

@@ -1,6 +1,6 @@
 -- Represents the choices provided when beating Mom and Mom's Heart.
 ---@enum GoalAltPaths
-ChallengeAPI.GoalAltPaths = {
+ChallengeAPI.Enum.GoalAltPaths = {
     -- Only the Negative will appear when defeating Mom.
     -- Only the trapdoor to Sheol will appear when defeating Mom's Heart.
     DEVIL = 0,
@@ -45,7 +45,7 @@ ChallengeAPI.GoalAltPaths = {
 
 -- Represents the choices provided when beating the main basement floors.
 ---@enum GoalSecretPaths
-ChallengeAPI.GoalSecretPaths = {
+ChallengeAPI.Enum.GoalSecretPaths = {
     -- Only the normal path will appear (Basement/Caves/Depths), preventing the player from accessing Downpour/Mines/Mausoleum.
     NORMAL = 0,
 
@@ -58,7 +58,7 @@ ChallengeAPI.GoalSecretPaths = {
 }
 
 ---@enum GoalHushMode
-ChallengeAPI.GoalHushMode = {
+ChallengeAPI.Enum.GoalHushMode = {
     -- The door to Hush may open when completing Womb 2 if the player is quick enough.
     NORMAL = 0,
 
@@ -74,7 +74,7 @@ ChallengeAPI.GoalHushMode = {
 }
 
 ---@enum GoalBossRushMode
-ChallengeAPI.GoalBossRushMode = {
+ChallengeAPI.Enum.GoalBossRushMode = {
     -- The door to Boss Rush may open when completing Womb 2 if the player is quick enough.
     NORMAL = 0,
 
@@ -90,7 +90,7 @@ ChallengeAPI.GoalBossRushMode = {
 }
 
 ---@enum GoalMomDoorMode
-ChallengeAPI.GoalMomDoorMode = {
+ChallengeAPI.Enum.GoalMomDoorMode = {
     -- The door out of the Mom boss fight on Depths/Mausoleum stays closed upon clearing the fight.
     NORMAL = 0,
 

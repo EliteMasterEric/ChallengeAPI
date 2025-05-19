@@ -101,7 +101,7 @@ function ChallengeAPI:RegisterVanillaChallenges()
         PlayerType.PLAYER_ISAAC, "mom")
     whenLifeGivesLemons:SetStartingCollectibles({ CollectibleType.COLLECTIBLE_LEMON_MISHAP, CollectibleType.COLLECTIBLE_HABIT, CollectibleType.COLLECTIBLE_9_VOLT })
     whenLifeGivesLemons:SetRoomFilter({ RoomType.ROOM_TREASURE })
-    whenLifeGivesLemons:SetStartingPill(PillEffect.PILLEFFECT_LEMON_PARTY)
+    whenLifeGivesLemons:SetStartingPills({PillEffect.PILLEFFECT_LEMON_PARTY})
 
     -- #13: Beans!
     local beans = ChallengeAPI:RegisterChallenge(Challenge.CHALLENGE_BEANS, "Beans!",
@@ -115,7 +115,7 @@ function ChallengeAPI:RegisterVanillaChallenges()
         PlayerType.PLAYER_ISAAC, "mom")
     itsInTheCards:SetStartingCollectibles({ CollectibleType.COLLECTIBLE_STARTER_DECK, CollectibleType.COLLECTIBLE_DECK_OF_CARDS, CollectibleType.COLLECTIBLE_9_VOLT, CollectibleType.COLLECTIBLE_BATTERY })
     itsInTheCards:SetRoomFilter({ RoomType.ROOM_TREASURE })
-    itsInTheCards:SetStartingCard(Card.CARD_RANDOM)
+    itsInTheCards:SetStartingCards({Card.CARD_RANDOM, Card.CARD_RANDOM})
 
     -- #15: Slow Roll
     local slowRoll = ChallengeAPI:RegisterChallenge(Challenge.CHALLENGE_SLOW_ROLL, "Slow Roll",

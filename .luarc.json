@@ -1,7 +1,7 @@
 {
   "runtime.version": "Lua 5.3",
   "workspace.library": [
-    "c:\\Users\\Eric\\.windsurf\\extensions\\filloax.isaac-lua-api-vscode-1.12.0\\out\\emmylua\\repentogon"
+    "c:\\Users\\Eric\\.cursor\\extensions\\filloax.isaac-lua-api-vscode-1.12.0\\out\\emmylua\\repentogon"
   ],
   "diagnostics.globals": [
     "ActionTriggers",

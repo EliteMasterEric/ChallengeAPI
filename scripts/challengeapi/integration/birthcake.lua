@@ -5,7 +5,7 @@ local function doBirthcakeIntegration()
     local isaacsBirthdayParty = Isaac.GetChallengeIdByName("Isaac's Birthday Party")
     local isaacsBirthdayPartyChallenge = ChallengeAPI:RegisterChallenge(isaacsBirthdayParty, "Isaac's Birthday Party",
         PlayerType.PLAYER_ISAAC, "beast")
-    if not REPENTOGON then
+    if not ChallengeAPI.IsREPENTOGON then
         isaacsBirthdayPartyChallenge:SetStartingTrinkets({
             Isaac.GetTrinketIdByName("Birthcake")
         })

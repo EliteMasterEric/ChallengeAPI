@@ -95,7 +95,7 @@ local function checkTrapdoor(_mod, gridEntity)
         return
     end
 
-    ChallengeAPI.Log("Trapdoor spawned! ", gridEntity.Position)
+    -- ChallengeAPI.Log("Trapdoor spawned! ", gridEntity.Position)
 
     local goal = ChallengeAPI:GetCurrentChallengeGoal()
     if goal == nil then
@@ -104,7 +104,7 @@ local function checkTrapdoor(_mod, gridEntity)
 
     local currentStage = Game():GetLevel():GetAbsoluteStage()
 
-    ChallengeAPI.Log("Current stage: ", currentStage)
+    -- ChallengeAPI.Log("Current stage: ", currentStage)
     if currentStage == LevelStage.STAGE3_2 then
         local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
         local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
@@ -113,7 +113,7 @@ local function checkTrapdoor(_mod, gridEntity)
     
         ChallengeAPI.Log("Should spawn womb door? ", shouldSpawnWombDoor)
 
-        if isSecretPathDoor and goal.mustFightBeast then
+        if isSecretPathDoor then
             return
         end
 
@@ -138,7 +138,7 @@ local function checkBeam(_mod, entityEffect)
         return
     end
 
-    ChallengeAPI.Log("Beam of light spawned! ", entityEffect.Position)
+    -- ChallengeAPI.Log("Beam of light spawned! ", entityEffect.Position)
 
     local goal = ChallengeAPI:GetCurrentChallengeGoal()
     if goal == nil then
@@ -147,14 +147,14 @@ local function checkBeam(_mod, entityEffect)
 
     local currentStage = Game():GetLevel():GetAbsoluteStage()
 
-    ChallengeAPI.Log("Current stage: ", currentStage)
+    -- ChallengeAPI.Log("Current stage: ", currentStage)
     if currentStage == LevelStage.STAGE3_2 then
         local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
         local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
         local isErrorRoomTrapdoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_ERROR_IDX
         local shouldSpawnWombDoor = (not goal.mustFightBeast)
     
-        ChallengeAPI.Log("Should spawn womb door? ", shouldSpawnWombDoor)
+        -- ChallengeAPI.Log("Should spawn womb door? ", shouldSpawnWombDoor)
 
         if isSecretPathDoor and goal.mustFightBeast then
             return
@@ -165,8 +165,8 @@ local function checkBeam(_mod, entityEffect)
                 return
             end
 
-            -- Prevent trapdoor spawn.
-            ChallengeAPI.Log("DESTROYING trapdoor")
+            -- Prevent beam spawn.
+            -- ChallengeAPI.Log("DESTROYING beam")
             destroyBeam(entityEffect)
         end
     end

@@ -1,6 +1,6 @@
 local languageCode = "en_us"
 
-ChallengeAPI.Log("Loading English language data")
+ChallengeAPI.Log("Loading language data: " .. languageCode)
 
 ChallengeAPI.language[languageCode] = {
     EIDChallengeUnknown = "Unknown Challenge",
@@ -22,12 +22,12 @@ ChallengeAPI.language[languageCode] = {
     EIDStartingTrinket = "{{Trinket{1}}} {2}",
 
     EIDStartingCard = "{{Card}} {1}",
-    EIDStartingCardRandom = "{{Card}} Random",
-    EIDStartingCardRandomMultiple = "{{Card}} Random x2",
+    EIDStartingCardRandom = "{{Card}} Random Card",
+    EIDStartingCardRandomMultiple = "{{Card}} Random Card x2",
 
     EIDStartingPill = "{{Pill}} {1}",
-    EIDStartingPillRandom = "{{Pill}} Random",
-    EIDStartingPillRandomMultiple = "{{Pill}} Random x2",
+    EIDStartingPillRandom = "{{Pill}} Random Pill",
+    EIDStartingPillRandomMultiple = "{{Pill}} Random Pill x2",
 
     EIDHardMode = "{{HardMode}} Hard Mode",
     -- Use Blind Rage to represent the blindfold

@@ -1,0 +1,6 @@
+include('scripts.challengeapi.goals.hooks.beast')
+include('scripts.challengeapi.goals.hooks.level_layout')
+include('scripts.challengeapi.goals.hooks.mom_fight')
+include('scripts.challengeapi.goals.hooks.polaroid_negative')
+include('scripts.challengeapi.goals.hooks.stage_transition')
+include('scripts.challengeapi.goals.hooks.trapdoors')

@@ -4,17 +4,9 @@ ChallengeAPI.GoalHUD = {
     hudSprite = nil,
 }
 
-local function onPostGameStarted(_)
-    ChallengeAPI.Log("New run started. Checking for challenge status...")
-
-    if not ChallengeAPI:IsInChallenge() then
-        ChallengeAPI.Log("Not in a challenge.")
-        return
-    end
-
-    local challenge = ChallengeAPI:GetCurrentChallenge()
+local function onChallengeStart(_mod, challenge, isContinue)
     if challenge == nil then
-        ChallengeAPI.Log("ERROR: Couldn't determine current challenge.")
+        ChallengeAPI.Log("Player started a challenge, but it hasn't been registered!")
         if ChallengeAPI.challenges:GetLength() == 0 then
             ChallengeAPI.Log("NOTE: No challenges registered. Did you forget to initialize them?")
         end
@@ -23,12 +15,12 @@ local function onPostGameStarted(_)
 
     local goal = challenge:FetchGoal()
     if goal == nil then
-        ChallengeAPI.Log("ERROR: Couldn't determine current goal.")
+        ChallengeAPI.Log("Challenge started, but goal couldn't be retrieved!")
         return
     end
 
-    ChallengeAPI.Log("We are in challenge: " .. challenge.name)
-    ChallengeAPI.Log("The goal is: " .. goal.name)
+    -- ChallengeAPI.Log("We are in challenge: " .. challenge.name)
+    -- ChallengeAPI.Log("The goal is: " .. goal.name)
 
     local goalIcon = goal.goalIcon
 
@@ -50,15 +42,41 @@ local function onPreGameExit(_)
 end
 
 local function getGoalIconPosition()
-    return Vector(36, 86)
+    -- A hard-coded value I determined by hand.
+    -- We may need to conditionally offset this value.
+    local basePos = Vector(36, 86)
+
+    -- Adding ScreenShakeOffset to ensure the icon shakes with the rest of the HUD.
+    return basePos + Game().ScreenShakeOffset
+end
+
+local function shouldRenderHUD()
+    -- Is the HUD initialized?
+    if not ChallengeAPI.GoalHUD.initialized then
+        return false
+    end
+
+    -- Is the HUD hidden by a cutscene?
+    if not Game():GetHUD():IsVisible() then
+        return false
+    end
+
+    -- Is the HUD hidden by an easter egg seed?
+    if Game():GetSeeds():HasSeedEffect(SeedEffect.SEED_NO_HUD) then
+        return false
+    end    
+
+    -- YAY!
+    return true
 end
 
 local function onPostRender(_)
     -- ChallengeAPI.Log("Game is rendering...")
-    if not ChallengeAPI.GoalHUD.initialized then
+    if not shouldRenderHUD() then
         return
     end
 
+    -- Do we have an icon to render?
     local goalIcon = ChallengeAPI.GoalHUD.hudSprite
     if goalIcon == nil then
         return
@@ -67,6 +85,6 @@ local function onPostRender(_)
     goalIcon:Render(getGoalIconPosition())
 end
 
-ChallengeAPI:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.LATE, onPostGameStarted)
+ChallengeAPI:AddPriorityCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_CHALLENGE_STARTED, CallbackPriority.LATE, onChallengeStart)
 ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, onPreGameExit)
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_RENDER, onPostRender)

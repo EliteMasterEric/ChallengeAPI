@@ -51,8 +51,8 @@ function ChallengeParams.new(id, name, playerType, goalId)
     self.startingCollectibles = {}
     self.startingCollectiblesEsau = {}
     self.startingTrinkets = {}
-    self.startingCard = nil
-    self.startingPill = nil
+    self.startingCards = {}
+    self.startingPills = {}
     self.startingMaxHearts = 0
     self.startingRedHearts = 0
     self.startingSoulHearts = 0
@@ -122,15 +122,23 @@ function ChallengeParams:SetStartingTrinkets(list)
 end
 
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
----@param card Card?
-function ChallengeParams:SetStartingCard(card)
-    self.startingCard = card
+---@param cards Card[]
+function ChallengeParams:SetStartingCards(cards)
+    if cards == nil then
+        self.startingCards = {}
+    else
+        self.startingCards = cards
+    end
 end
 
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
----@param pill PillEffect?
-function ChallengeParams:SetStartingPill(pill)
-    self.startingPill = pill
+---@param pills PillEffect[]
+function ChallengeParams:SetStartingPills(pills)
+    if pills == nil then
+        self.startingPills = {}
+    else
+        self.startingPills = pills
+    end
 end
 
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
@@ -271,7 +279,13 @@ end
 ---@return ChallengeParams
 function ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
     local challenge = ChallengeParams.new(id, name, playerType, goalId)
+    
     ChallengeAPI.challenges[challenge.id] = challenge
+
+    -- Execute the callback.
+    -- TODO: Should there be a callback that can prevent registration? How do we handle that?
+    Isaac.RunCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_POST_CHALLENGE_REGISTERED, challenge)
+
     return challenge
 end
 

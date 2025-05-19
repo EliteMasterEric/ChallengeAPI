@@ -87,7 +87,7 @@ local function registerChallengeFromConfigData(entry)
         end
     end
 
-    local goalId = entry.capigoal
+    local goalId = entry.chalapigoal
     
     if goalId == nil then
         -- Try to guess the goal ID based on the challenge parameters
@@ -145,14 +145,28 @@ local function registerChallengeFromConfigData(entry)
         ::continue::
     end
 
-    ---@type Card?
+    ---@type Card[]
+    local startingCards = {}
     local startingCard = entry.startingcard and tonumber(entry.startingcard) or Card.CARD_NULL
     if startingCard == Card.CARD_NULL then
-        startingCard = nil
+        startingCards = {}
+    elseif startingCard == Card.CARD_RANDOM and ChallengeAPI.Util.TableContains(startingCollectibles, CollectibleType.COLLECTIBLE_STARTER_DECK) then
+        -- Start with two random cards
+        startingCards = {Card.CARD_RANDOM, Card.CARD_RANDOM}
+    else
+        table.insert(startingCards, startingCard)
     end
 
-    ---@type PillEffect?
+    local startingPills = {}
     local startingPill = entry.startingpill and tonumber(entry.startingpill) or nil
+    if startingPill == nil then
+        startingPills = {}
+    elseif startingPill == PillEffect.PILLEFFECT_NULL and ChallengeAPI.Util.TableContains(startingCollectibles, CollectibleType.COLLECTIBLE_LITTLE_BAGGY) then
+        -- Start with two random pills
+        startingPills = {PillEffect.PILLEFFECT_NULL, PillEffect.PILLEFFECT_NULL}
+    else
+        table.insert(startingPills, startingPill)
+    end
 
     ---@type ChallengeParams
     local challenge = ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
@@ -161,8 +175,8 @@ local function registerChallengeFromConfigData(entry)
     challenge:SetStartingCollectibles(startingCollectibles)
     challenge:SetRemovedCollectibles(removedCollectibles)
     challenge:SetStartingTrinkets(startingTrinkets)
-    challenge:SetStartingCard(startingCard)
-    challenge:SetStartingPill(startingPill)
+    challenge:SetStartingCards(startingCards)
+    challenge:SetStartingPills(startingPills)
     challenge:SetStartingMaxHearts(startingMaxHearts)
     challenge:SetStartingRedHearts(startingRedHearts)
     challenge:SetStartingSoulHearts(startingSoulHearts)
@@ -178,7 +192,8 @@ local function registerChallengeFromConfigData(entry)
     challenge:SetCurseFilter(curseFilter)
     challenge:SetMinimumFireRate(minimumFireRate)
 
-    ChallengeAPI.Log("Registered challenge " .. name .. " (" .. id .. ")")
+    -- TODO: This is a useful log but a spammy one, should we leave it on?
+    -- ChallengeAPI.Log("Registered challenge " .. name .. " (" .. id .. ")")
 end
 
 -- Fetches all challenge entries from the XML data, and registers them with ChallengeAPI.
