@@ -41,6 +41,7 @@ function Goal.new(id, name, endStage, altPath, secretPath, megaSatan)
     self.mustFightBeast = false
     self.hushMode = ChallengeAPI.Enum.GoalHushMode.NORMAL
     self.bossRushMode = ChallengeAPI.Enum.GoalBossRushMode.NORMAL
+    self.momDoorMode = ChallengeAPI.Enum.GoalMomDoorMode.NORMAL
     self.stageTypes = {
         [LevelStage.STAGE1_1] = -1,
         [LevelStage.STAGE1_2] = -1,
