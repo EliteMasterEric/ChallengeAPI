@@ -10,7 +10,7 @@ ChallengeAPI.IsRepentancePlus = REPENTANCE_PLUS or FontRenderSettings ~= nil -- 
 ChallengeAPI.IsRepentance = REPENTANCE or ChallengeAPI.IsRepentancePlus -- True if we are on Repentance OR Repentance+
 ChallengeAPI.IsAfterbirthPlus = not ChallengeAPI.IsRepentance and not ChallengeAPI.IsRepentancePlus -- True only if we are on Afterbirth+ (no other DLCs enabled)
 ChallengeAPI.IsRepentanceOnly = ChallengeAPI.IsRepentance and not ChallengeAPI.IsRepentancePlus -- True if we are on Repentance but NOT Repentance+
-ChallengeAPI.IsREPENTOGON = false -- REPENTOGON ~= nil
+ChallengeAPI.IsREPENTOGON = REPENTOGON ~= nil
 
 ChallengeAPI.Languages = {"en_us"}
 
