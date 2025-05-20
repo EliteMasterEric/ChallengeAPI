@@ -44,6 +44,8 @@ local function injectEIDCategory()
 
     -- 2 = after "Overview"
     table.insert(EID.ItemReminderCategories, 2, category)
+
+    EID:ResetItemReminderSelectedItems()
 end
 
 local function getPlayerName(id)
