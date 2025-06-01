@@ -393,6 +393,12 @@ function ChallengeAPI:EID_HandleChallengeScrollbar(player)
     return scrollbarDesc
 end
 
+function ChallengeAPI:EID_AddCustomEntities()
+    -- TODO: You can't actually add custom grid entities yet, boo!
+    -- addGridEntityDescription(GridEntityType.GRID_POOP, ChallengeAPI.PoopVariantTreasureRoom, )
+    -- addGridEntityDescription(GridEntityType.GRID_POOP, ChallengeAPI.PoopVariantPlanetarium, )
+end
+
 function ChallengeAPI:EID_EnableIntegration(_)
     if not isEIDEnabled() then
         ChallengeAPI.Log("EID integration disabled.")
@@ -402,6 +408,7 @@ function ChallengeAPI:EID_EnableIntegration(_)
     injectEIDCategory()
     ChallengeAPI:EID_ApplyLanguageData()
     ChallengeAPI:EID_AddCachedIcons()
+    ChallengeAPI:EID_AddCustomEntities()
     
     ChallengeAPI.EID_HasInitialized = true
 

@@ -148,6 +148,14 @@ local function checkBeam(_mod, entityEffect)
     local currentStage = Game():GetLevel():GetAbsoluteStage()
 
     -- ChallengeAPI.Log("Current stage: ", currentStage)
+
+    local isInAscent = Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
+
+    if isInAscent then
+        -- Don't mess with beams of light in the Ascent.
+        return
+    end
+    
     if currentStage == LevelStage.STAGE3_2 then
         local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
         local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
@@ -166,7 +174,7 @@ local function checkBeam(_mod, entityEffect)
             end
 
             -- Prevent beam spawn.
-            -- ChallengeAPI.Log("DESTROYING beam")
+            ChallengeAPI.Log("DESTROYING beam")
             destroyBeam(entityEffect)
         end
     end

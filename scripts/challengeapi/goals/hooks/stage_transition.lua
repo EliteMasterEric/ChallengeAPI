@@ -105,18 +105,19 @@ local function onPreLevelSelect(_mod, level, type)
         return nil
     end
 
-    if goal.mustFightBeast and level == LevelStage.STAGE3_2 then
+    local isInAscent = Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH) or Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH_INIT)
+
+    if goal.mustFightBeast and level == LevelStage.STAGE3_2 and not isInAscent then
         -- Temporarily switch to an empty challenge.
         -- This allows the Strange Door to generate.
-        ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door (onPreLevelSelect)")
+        -- ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door (onPreLevelSelect)")
         ChallengeAPI:SwitchChallenge(Challenge.CHALLENGE_NULL)
     end
 
     if goal.mustFightBeast and level == LevelStage.STAGE4_1 then
         -- Tried to go to Womb during Beast challenge.
-        forceDadsNote()
-        
         -- ChallengeAPI.Log("Forcing to Mausoleum 2...")
+        forceDadsNote()
 
         local type = StageType.STAGETYPE_REPENTANCE
 
@@ -144,17 +145,20 @@ local function onPreNewRoom(_mod, room, roomDescriptor)
 
     local level = Game():GetLevel()
     local isStartingRoom = level:GetCurrentRoomIndex() == level:GetStartingRoomIndex()
+    local isInAscent = Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH) or Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH_INIT)
 
-    if goal.mustFightBeast and currentStage == LevelStage.STAGE3_2 and isStartingRoom then
+    if goal.mustFightBeast and currentStage == LevelStage.STAGE3_2 and isStartingRoom and not isInAscent then
         -- Temporarily set the challenge to null (without affecting display)
         -- This forces the Strange Door to appear.
-        ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door (onPreNewRoom)...")
+        -- ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door (onPreNewRoom)...")
         ChallengeAPI:SwitchChallenge(Challenge.CHALLENGE_NULL)
     else
         -- Keep the run on the current challenge.
         -- NOTE: We don't have a callback without REPENTOGON that runs early enough
         -- to guarantee we can respawn the strange door again, so we spend the
         -- entirety of Depths 2 in "switched" mode.
+        -- ChallengeAPI.Log("Reverting to challenge abc...")
+        -- ChallengeAPI.Log(goal.mustFightBeast, currentStage, isStartingRoom, isInAscent)
         ChallengeAPI:RevertChallenge()
     end
 end
@@ -172,9 +176,9 @@ local function onPostNewLevel(_mod)
         return nil
     end
 
-    if goal.mustFightBeast and currentStage == LevelStage.STAGE3_2 then
-        forceDadsNote()
-    end
+    -- if goal.mustFightBeast and currentStage == LevelStage.STAGE3_2 then
+    --     forceDadsNote()
+    -- end
 end
 
 ---@param player EntityPlayer
@@ -222,7 +226,7 @@ local function onPostPlayerUpdate(_mod, player)
 
         -- Temporarily switch to an empty challenge.
         -- This allows the Strange Door to generate.
-        ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door...")
+        -- ChallengeAPI.Log("Forcing player out of challenge to generate Strange Door...")
         ChallengeAPI:SwitchChallenge(Challenge.CHALLENGE_NULL)
     end
     wasPlayerOnTrapdoor = isPlayerOnTrapdoor

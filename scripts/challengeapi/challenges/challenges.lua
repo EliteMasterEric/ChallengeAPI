@@ -270,6 +270,13 @@ function ChallengeParams:IsActive()
     return Isaac.GetChallenge() == self.id
 end
 
+-- Whether this challenge is currently a room filter for the given room type.
+---@param roomType RoomType The room type to check.
+---@return boolean Whether that room filter is applied.
+function ChallengeParams:IsRoomFilterActive(roomType)
+    return ChallengeAPI.Util.TableContains(self.roomFilter, roomType)
+end
+
 -- Register a new challenge with the ChallengeAPI.
 -- This gets done automatically for all the challenges in `challenges.xml`
 ---@param id integer An internal ID for the challenge.

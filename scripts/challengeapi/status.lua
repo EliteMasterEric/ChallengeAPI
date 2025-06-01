@@ -85,7 +85,7 @@ end
 -- Revert the game back to the previous challenge, if we had swapped to one temporarily.
 function ChallengeAPI:RevertChallenge()
     if ChallengeAPI.Status.currentChallenge ~= nil then
-        ChallengeAPI.Log("Reverting to challenge: ", ChallengeAPI.Status.currentChallenge)
+        -- ChallengeAPI.Log("Reverting to challenge: ", ChallengeAPI.Status.currentChallenge)
         Game().Challenge = ChallengeAPI.Status.currentChallenge
         ChallengeAPI.Status.currentChallenge = nil
     end
