@@ -35,7 +35,7 @@ function ChallengeAPI:RegisterVanillaGoals()
    local megaSatan = ChallengeAPI:RegisterGoal("mega-satan", "Mega Satan", LevelStage.STAGE7, ChallengeAPI.Enum.GoalAltPaths.DEVIL, ChallengeAPI.Enum.GoalSecretPaths.NORMAL, true)
    megaSatan:SetEIDNotes({"Fight in Dark Room"})
    megaSatan:SetEIDIcon("{{MegaSatan}}")
-   megaSatan:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mega-satan.png"), 16, 16)
+   megaSatan:SetGoalIcon(ChallengeAPI.Util.LoadGoalIcon("gfx/ui/challenges/goals/mega-satan.png", true), 16, 16)
 
    -- Defeat Mother in Corpse
    local mother = ChallengeAPI:RegisterGoal("mother", "Mother", LevelStage.STAGE4_2, ChallengeAPI.Enum.GoalAltPaths.DEVIL, ChallengeAPI.Enum.GoalSecretPaths.SECRET, false)

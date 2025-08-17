@@ -117,9 +117,21 @@ function ChallengeAPI.Util.GetTrapdoors()
     return result
 end
 
-function ChallengeAPI.Util.LoadGoalIcon(iconPath)
+-- Builds a sprite for the goal icon at the given path.
+---@param iconPath string The path to the icon.
+---@param large? boolean Whether the icon is larger than 16x16. Defaults to false.
+---@return Sprite goalIcon The generated sprite.
+function ChallengeAPI.Util.LoadGoalIcon(iconPath, large)
+    if large == nil then
+        large = false
+    end
+
     local sprite = Sprite()
-    sprite:Load("gfx/ui/challenges/goals/goal.anm2", false)
+    local spritePath = "gfx/ui/challenges/goals/goal.anm2"
+    if large then
+        spritePath = "gfx/ui/challenges/goals/goal_large.anm2"
+    end
+    sprite:Load(spritePath, false)
     sprite:ReplaceSpritesheet(0, iconPath)
     sprite:LoadGraphics()
     sprite:Play("Idle", true)
