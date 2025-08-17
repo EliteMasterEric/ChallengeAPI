@@ -148,3 +148,39 @@ function ChallengeAPI.Util.IsInDimension(dimensionId)
     
     return GetPtrHash(currentRoom) == GetPtrHash(roomInDimension)
 end
+
+-- Hides the room on the minimap
+---@param roomIndex integer The room index in the level to hide.
+function ChallengeAPI.Util.HideRoomOnMinimap(roomIndex)
+    local roomDescriptor = Game():GetLevel():GetRoomByIdx(roomIndex, -1)
+
+    -- If MinimapAPI is enabled, we handle hiding rooms elsewhere.
+    if MinimapAPI then
+        local roomPos = MinimapAPI:GridIndexToVector(roomIndex)
+        -- ChallengeAPI.Log("Hiding room via MinimapAPI " .. tostring(roomPos))
+        MinimapAPI:RemoveRoom(roomPos)
+    else
+        -- TODO: Doesn't actually work?
+        -- Do we have to call this AFTER Mind and BEFORE minimap render?
+        if roomDescriptor.DisplayFlags & RoomDescriptor.DISPLAY_NONE ~= RoomDescriptor.DISPLAY_NONE then
+            -- ChallengeAPI.Log("Hiding room without MinimapAPI " .. roomIndex)
+            roomDescriptor.DisplayFlags = RoomDescriptor.DISPLAY_NONE
+            Game():GetLevel():UpdateVisibility()
+        end
+    end
+end
+
+-- Hides every room on the minimap that matches the given RoomType.
+---@param roomType RoomType The room type to hide.
+function ChallengeAPI.Util.HideAllRoomsOfTypeOnMinimap(roomType)
+    for i = 0, (13*13 - 1) do -- Check every space in the level grid.
+        local room = Game():GetLevel():GetRoomByIdx(i, -1)
+        if room == nil or room.Data == nil then
+            goto continue
+        end
+        if room.Data.Type == roomType then
+            ChallengeAPI.Util.HideRoomOnMinimap(i)
+        end
+        ::continue::
+    end
+end

@@ -214,8 +214,7 @@ local function postCollectibleInit(_mod, entity)
         -- The door out of the Mom fight will spawn on its own when she is killed,
         -- if we are on Repentance+ and we are in a challenge.
         -- This is due to the code for handling the Beast daily run.
-        local willMomDoorSpawnOnItsOwn = ChallengeAPI.IsRepentancePlus and not Game().Challenge == Challenge.CHALLENGE_NULL
-
+        local willMomDoorSpawnOnItsOwn = ChallengeAPI.IsRepentancePlus and ChallengeAPI:IsInChallenge()
         
         if not handledMomDeath and not willMomDoorSpawnOnItsOwn then
             local isInDeathCertificateDimension = ChallengeAPI.Util.IsInDimension(2)
@@ -225,7 +224,7 @@ local function postCollectibleInit(_mod, entity)
                 return
             end
 
-            ChallengeAPI.Log("Mom has died, spawning a door!")
+            ChallengeAPI.Log("Mom has died, spawning a door!", ChallengeAPI.IsRepentancePlus, ChallengeAPI:IsInChallenge())
             handleClearedBossRoom()
             handledMomDeath = true
         else

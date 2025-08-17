@@ -58,7 +58,7 @@ local function onPreEntitySpawn(_mod, entityType, variant, subType, position)
         return
     end
 
-    ChallengeAPI.Log("It's not spawning in a Red room!")
+    -- ChallengeAPI.Log("It's not spawning in a Red room!")
 
     -- We are in a treasure room, that is not in a Red Room, and we are spawning a collectible,
     -- and the room filter is supposed to be active.
@@ -74,7 +74,7 @@ local function onPreEntitySpawn(_mod, entityType, variant, subType, position)
     return {EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, 0}
 end
 
-local function handleOpeningDoors()
+local function handleDeletingDoors()
     -- ChallengeAPI.Log("Room cleared!")
 
     local doorSlots = {
@@ -96,10 +96,44 @@ local function handleOpeningDoors()
 
             if isTreasureDoor then
                 -- Open the door for free, so that you don't lose any resources from opening a corrected treasure room.
-                ChallengeAPI.Log("Unlocking a filtered Treasure Room door for free!")
-                door:SetLocked(false)
+                --ChallengeAPI.Log("Unlocking a filtered Treasure Room door for free!")
+                -- door:SetLocked(false)
+
+                -- Destroy the door so people think the room doesn't exist.
+                ChallengeAPI.Log("Destroying a filtered Treasure Room door!")
+                room:RemoveDoor(doorSlot)
             end
         end
+    end
+end
+
+local function cancelTeleportSound()
+    -- Play the sound at 0 volume so the sound doesn't play later.
+    -- ChallengeAPI.Log("Cancelling teleport sound...")
+    SFXManager():Play(SoundEffect.SOUND_HELL_PORTAL2, 0.0, 20, false, 1.0, 0)
+end
+
+local blindSprite = Sprite()
+
+local function blindScreenInTreasureRoom()
+    local room = Game():GetRoom()
+    if room:GetType() == RoomType.ROOM_TREASURE or room:GetType() == RoomType.ROOM_PLANETARIUM then
+        -- ChallengeAPI.Log("Blinding a filtered Treasure Room...")
+        -- Render a white rectangle over the screen.
+        blindSprite:Play("Idle", true)
+        blindSprite.Scale = Vector(Isaac.GetScreenWidth(), Isaac.GetScreenHeight())
+        blindSprite:Render(Vector(0, 0))
+    end
+end
+
+local function evacuateTreasureRoom()
+    local room = Game():GetRoom()
+    if room:GetType() == RoomType.ROOM_TREASURE or room:GetType() == RoomType.ROOM_PLANETARIUM then
+        ChallengeAPI.Log("Evacuating a filtered Treasure Room...")
+        
+        -- Have the player consume a Telepills, to force them to leave the room.
+        cancelTeleportSound()
+        Isaac.GetPlayer(0):UsePill(PillEffect.PILLEFFECT_TELEPILLS, PillColor.PILL_BLUE_BLUE, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOHUD)
     end
 end
 
@@ -108,7 +142,18 @@ local function onRoomClear(_mod)
         return
     end
 
-    handleOpeningDoors()
+    handleDeletingDoors()
+end
+
+local function onPostRender(_mod)
+    if not isHookValid() then
+        return
+    end
+
+    ChallengeAPI.Util.HideAllRoomsOfTypeOnMinimap(RoomType.ROOM_TREASURE)
+    ChallengeAPI.Util.HideAllRoomsOfTypeOnMinimap(RoomType.ROOM_PLANETARIUM)
+
+    blindScreenInTreasureRoom()
 end
 
 local function onPostNewRoom(_mod)
@@ -116,13 +161,14 @@ local function onPostNewRoom(_mod)
         return
     end
 
-    local isCleared = Game():GetRoom():IsClear()
+    blindSprite:Load("gfx/ui/a-single-black-pixel-but-evil.anm2", true)
 
-    if isCleared then
-        handleOpeningDoors()
-    end
+    handleDeletingDoors()
+
+    evacuateTreasureRoom()
 end
 
+ChallengeAPI:AddCallback(ModCallbacks.MC_POST_RENDER, onPostRender)
 ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, onPreEntitySpawn)
 ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, onRoomClear)
-ChallengeAPI:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, onRoomClear)
+ChallengeAPI:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, onPostNewRoom)

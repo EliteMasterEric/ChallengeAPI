@@ -44,5 +44,6 @@ See [the API documentation](docs/api.md) for more information on how to use this
 
 **Special Thanks**
 
-- **Lizzy**: For being awesome
+- **Lizzy**: For being awesome and helping with the code for this
+- **MrHeadcrab**: For being awesome and helping with the code for this
 - **wofsauge**: For structuring External Item Descriptions well

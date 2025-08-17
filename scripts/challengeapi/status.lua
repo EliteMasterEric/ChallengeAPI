@@ -23,6 +23,7 @@ function ChallengeAPI:GetCurrentChallenge()
 
     local challenge = Game().Challenge
     if challenge == 0 then
+        ChallengeAPI.Log("(getCurrentChallenge) Not in challenge!")
         return nil
     end
 

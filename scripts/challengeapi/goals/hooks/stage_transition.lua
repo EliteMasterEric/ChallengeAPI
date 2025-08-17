@@ -163,6 +163,19 @@ local function onPreNewRoom(_mod, room, roomDescriptor)
     end
 end
 
+local function onPostPlayerUpdateRgon(_mod, player)
+    if not isHookValid() then
+        return
+    end
+
+    -- This line is to ensure the challenge is switched for only one frame,
+    -- so that the HUD is updated correctly.
+    -- TODO: Does this cause any broken side effects?
+    if Game().Challenge == Challenge.CHALLENGE_NULL and ChallengeAPI:IsInChallenge() then
+        ChallengeAPI:RevertChallenge()
+    end
+end
+
 local function onPostNewLevel(_mod)
     if not isHookValid() then
         return
@@ -240,6 +253,7 @@ if ChallengeAPI.IsREPENTOGON then
     ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, onPreLevelInit)
     ChallengeAPI:AddCallback(ModCallbacks.MC_POST_LEVEL_LAYOUT_GENERATED, onPostLevelLayoutGenerated)
     ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_NEW_ROOM, onPreNewRoom)
+    ChallengeAPI:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, onPostPlayerUpdateRgon)
 else
     ChallengeAPI:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, onPostPlayerUpdate)
     -- ChallengeAPI:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, onPostNewRoom)

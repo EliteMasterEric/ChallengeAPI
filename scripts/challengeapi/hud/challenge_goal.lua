@@ -85,6 +85,14 @@ local function onPostRender(_)
     goalIcon:Render(getGoalIconPosition())
 end
 
+local function onModLoad(_)
+    if ChallengeAPI:IsInChallenge() then
+        ChallengeAPI.Log("Mod was reloaded! Reinitializing HUD...")
+        onChallengeStart(ChallengeAPI, ChallengeAPI:GetCurrentChallenge(), true)
+    end
+end
+
+ChallengeAPI:AddCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_POST_LOADED, onModLoad)
 ChallengeAPI:AddPriorityCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_CHALLENGE_STARTED, CallbackPriority.LATE, onChallengeStart)
 ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, onPreGameExit)
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_RENDER, onPostRender)
