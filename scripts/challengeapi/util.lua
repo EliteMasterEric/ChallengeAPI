@@ -125,3 +125,14 @@ function ChallengeAPI.Util.LoadGoalIcon(iconPath)
     sprite:Play("Idle", true)
     return sprite
 end
+
+-- Returns true if the current room is in the given dimension
+-- 0 = default, 1 = mirror, 2 = death certificate
+function ChallengeAPI.Util.IsInDimension(dimensionId)
+    local currentRoomIndex = Game():GetLevel():GetCurrentRoomIndex()
+
+    local currentRoom = Game():GetLevel():GetRoomByIdx(currentRoomIndex, -1)
+    local roomInDimension = Game():GetLevel():GetRoomByIdx(currentRoomIndex, dimensionId)
+    
+    return GetPtrHash(currentRoom) == GetPtrHash(roomInDimension)
+end

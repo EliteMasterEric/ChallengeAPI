@@ -41,15 +41,15 @@ local function onPreEntitySpawn(_mod, entityType, variant, subType, position)
     -- If the hook is valid, we are in a challenge where treasure rooms are filtered.
     -- If the game bugs and a treasure room spawns anyway, we need to replace any items that spawn in it.
 
-    ChallengeAPI.Log("A collectible is spawning!")
+    -- ChallengeAPI.Log("A collectible is spawning!")
 
     local room = Game():GetRoom()
     if room:GetType() ~= RoomType.ROOM_TREASURE and room:GetType() ~= RoomType.ROOM_PLANETARIUM then
-        ChallengeAPI.Log("It's not in a Treasure Room or Planetarium tho...")
+        -- ChallengeAPI.Log("It's not in a Treasure Room or Planetarium tho...")
         return
     end
 
-    ChallengeAPI.Log("It's spawning in a Treasure room or Planetarium!")
+    ChallengeAPI.Log("Collectible spawning in a Treasure room or Planetarium, but we're on a challenge that doesn't spawn treasure rooms!")
     
     local roomDescriptor = Game():GetLevel():GetCurrentRoomDesc()
     -- If roomDescriptor.Flags includes RED_ROOM, ignore it.

@@ -141,6 +141,8 @@ local function trySpawnDoor(doorSlot)
         cooldown = 30,
     }
 
+    ChallengeAPI.Log("Spawned fake door at slot " .. doorSlot .. ".")
+
     -- Enable the postEffectRender callback
     ChallengeAPI:AddCallback(ModCallbacks.MC_POST_EFFECT_RENDER, onPostEffectRender, EffectVariant.DEVIL)
 end
@@ -214,7 +216,15 @@ local function postCollectibleInit(_mod, entity)
         -- This is due to the code for handling the Beast daily run.
         local willMomDoorSpawnOnItsOwn = ChallengeAPI.IsRepentancePlus and not Game().Challenge == Challenge.CHALLENGE_NULL
 
+        
         if not handledMomDeath and not willMomDoorSpawnOnItsOwn then
+            local isInDeathCertificateDimension = ChallengeAPI.Util.IsInDimension(2)
+
+            if isInDeathCertificateDimension then
+                ChallengeAPI.Log("Mom didn't actually die, we're in the Death Certificate dimension.")
+                return
+            end
+
             ChallengeAPI.Log("Mom has died, spawning a door!")
             handleClearedBossRoom()
             handledMomDeath = true
