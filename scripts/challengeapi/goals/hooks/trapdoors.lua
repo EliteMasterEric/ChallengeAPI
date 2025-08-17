@@ -124,9 +124,7 @@ local function checkTrapdoor(_mod, gridEntity)
             end
 
             -- Prevent trapdoor spawn.
-            ChallengeAPI.Log("DESTROYING trapdoor")
             destroyTrapdoor(gridEntity)
-            
         end
     end
 end
