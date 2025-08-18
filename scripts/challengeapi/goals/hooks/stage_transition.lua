@@ -171,9 +171,9 @@ local function onPostPlayerUpdateRgon(_mod, player)
     -- This line is to ensure the challenge is switched for only one frame,
     -- so that the HUD is updated correctly.
     -- TODO: Does this cause any broken side effects?
-    if Game().Challenge == Challenge.CHALLENGE_NULL and ChallengeAPI:IsInChallenge() then
-        ChallengeAPI:RevertChallenge()
-    end
+    -- if Game().Challenge == Challenge.CHALLENGE_NULL and ChallengeAPI:IsInChallenge() then
+    --     ChallengeAPI:RevertChallenge()
+    -- end
 end
 
 local function onPostNewLevel(_mod)
