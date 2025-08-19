@@ -49,7 +49,6 @@ function ChallengeAPI:AreHooksActive()
     local challenge = ChallengeAPI:GetCurrentChallenge()
     -- If we aren't in a challenge, no hooks.
     if challenge == nil then
-        ChallengeAPI.Log("(areHooksActive) Not in challenge!")
         return false
     end
 
