@@ -12,11 +12,9 @@ local function isHookValid()
 
     local challenge = ChallengeAPI:GetCurrentChallenge()
     if challenge == nil then
-        ChallengeAPI.Log("Not in a challenge...")
         return false
     end
     if not challenge:IsRoomFilterActive(RoomType.ROOM_TREASURE) then
-        ChallengeAPI.Log("Invalid room filter...")
         return false
     end
 
