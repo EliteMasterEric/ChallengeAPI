@@ -199,6 +199,7 @@ end
 -- Fetches all challenge entries from the XML data, and registers them with ChallengeAPI.
 function ChallengeAPI:RegisterChallengesFromConfig()
     if ChallengeAPI.IsREPENTOGON then
+        ChallengeAPI.Log("Registering challenges from config...")
         local count = XMLData.GetNumEntries(XMLNode.CHALLENGE)
         for i = 1, count do
             local entry = XMLData.GetEntryByOrder(XMLNode.CHALLENGE, i)

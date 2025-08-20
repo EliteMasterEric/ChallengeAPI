@@ -194,8 +194,9 @@ local function onPostNewRoom(_mod)
     
     local isOnMomStage = (levelStage == LevelStage.STAGE3_2)
         and (stageType == StageType.STAGETYPE_ORIGINAL or stageType == StageType.STAGETYPE_AFTERBIRTH or stageType == StageType.STAGETYPE_WOTL)
+    local isInAscent = Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH) or Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH_INIT)
 
-    if isOnMomStage and roomType == RoomType.ROOM_BOSS then
+    if isOnMomStage and roomType == RoomType.ROOM_BOSS and not isInAscent then
         if isRoomCleared then
             handleClearedBossRoom()
         end
