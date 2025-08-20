@@ -124,7 +124,14 @@ end
 local function spawnTrophy()
     local room = Game():GetRoom()
     local centerPos = room:GetCenterPos()
-    Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TROPHY, 0, centerPos, Vector.Zero, nil)
+    local trophy = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TROPHY, 0, centerPos, Vector.Zero, nil)
+
+    -- Apply a custom animation.
+    trophy:GetSprite():Load("gfx/trophy/trophy_flying.anm2", true)
+
+    -- Play the Appear animation.
+    trophy:GetSprite().PlaybackSpeed = 0.5
+    trophy:GetSprite():Play("Appear", true)
 end
 
 -- Called every frame.
