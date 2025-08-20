@@ -28,11 +28,6 @@ A library mod for providing custom challenge-related functionality, including cu
     [] notrinkets=true/false
     [] startinggulpedtrinkets="trinketId,commaSeparated"
 
-- Known issues:
-    [] Challenge goal HUD displays even during cutscenes.
-
-goto x.itemdungeon.666
-
 ## Documentation
 
 See [the API documentation](docs/api.md) for more information on how to use this library to add custom challenge goals and descriptions to your mods.

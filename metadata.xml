@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-    <name>[REP(+)] ChallengeAPI</name>
+    <name>[REP(+)] ChallengeAPI (BETA)</name>
     <directory>challengeapi</directory>
     <id>3478225226</id>
     <description>A library mod to help create and manage custom challenges.</description>
-    <version>1.1</version>
-    <visibility>Friends Only</visibility>
+    <version>1.2</version>
+    <visibility>Public</visibility>
     <tag id="Challenges"/>
     <tag id="Lua"/>
     <tag id="Tweaks"/>
