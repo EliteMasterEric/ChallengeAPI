@@ -48,6 +48,8 @@ include('scripts.challengeapi.goals.hooks.tags.init')
 include('scripts.challengeapi.hud.challenge_goal')
 include('scripts.challengeapi.hud.eid')
 
+include('scripts.challengeapi.integration.index')
+
 -- Called after all mods are loaded, in case of load order issues.
 local didPostModLoad = false
 local function onPostModsLoaded(_)
@@ -61,7 +63,7 @@ local function onPostModsLoaded(_)
 
   ChallengeAPI:EID_EnableIntegration()
   
-  include('scripts.challengeapi.integration.index')
+  ChallengeAPI:Birthcake_EnableIntegration()
 end
 
 local function onEIDPostLoad()
