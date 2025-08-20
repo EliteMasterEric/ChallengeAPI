@@ -47,7 +47,7 @@ local function getGoalIconPosition()
     local basePos = Vector(36, 86)
 
     -- Adding ScreenShakeOffset to ensure the icon shakes with the rest of the HUD.
-    return basePos + Game().ScreenShakeOffset
+    return basePos -- + Game().ScreenShakeOffset
 end
 
 local function shouldRenderHUD()
