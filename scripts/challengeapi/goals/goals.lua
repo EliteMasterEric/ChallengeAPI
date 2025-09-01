@@ -128,13 +128,15 @@ function Goal:SetMustFightBeast(value)
     self.mustFightBeast = value
 end
 
----Specify additional line of description for this goal,
----to be displayed in External Item Descriptions (EID).
+-- Specify additional line of description for this goal,
+-- to be displayed in External Item Descriptions (EID).
 ---@param notes string[] A list of additional lines to display in the EID description of the challenge, just under the goal name.
 function Goal:SetEIDNotes(notes)
     self.eidNotes = notes
 end
 
+-- Builds one or more lines of the EID description for this challenge goal.
+-- This is generally for internal use only.
 function Goal:BuildDescriptionLines()
     local lines = {}
     
@@ -152,6 +154,9 @@ function Goal:BuildDescriptionLines()
     return lines
 end
 
+-- Assigns a shortcut string to display as a goal icon for the Challenge Summary in EID.
+-- For example, `"{{BlueBaby}}"` will use the Blue Baby boss icon.
+---@param icon string? The string to display for this challenge goal in the EID description.
 function Goal:SetEIDIcon(icon)
     self.eidIcon = icon
 end

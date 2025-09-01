@@ -14,6 +14,7 @@ local function isHookValid()
     if challenge == nil then
         return false
     end
+    
     if not challenge:IsRoomFilterActive(RoomType.ROOM_TREASURE) then
         return false
     end
@@ -105,33 +106,17 @@ local function handleDeletingDoors()
     end
 end
 
-local function cancelTeleportSound()
-    -- Play the sound at 0 volume so the sound doesn't play later.
-    -- ChallengeAPI.Log("Cancelling teleport sound...")
-    SFXManager():Play(SoundEffect.SOUND_HELL_PORTAL2, 0.0, 20, false, 1.0, 0)
-end
-
-local blindSprite = Sprite()
-
 local function blindScreenInTreasureRoom()
     local room = Game():GetRoom()
     if room:GetType() == RoomType.ROOM_TREASURE or room:GetType() == RoomType.ROOM_PLANETARIUM then
-        -- ChallengeAPI.Log("Blinding a filtered Treasure Room...")
-        -- Render a white rectangle over the screen.
-        blindSprite:Play("Idle", true)
-        blindSprite.Scale = Vector(Isaac.GetScreenWidth(), Isaac.GetScreenHeight())
-        blindSprite:Render(Vector(0, 0))
+        ChallengeAPI.Util.BlindPlayerWithWhite()
     end
 end
 
 local function evacuateTreasureRoom()
     local room = Game():GetRoom()
     if room:GetType() == RoomType.ROOM_TREASURE or room:GetType() == RoomType.ROOM_PLANETARIUM then
-        ChallengeAPI.Log("Evacuating a filtered Treasure Room...")
-        
-        -- Have the player consume a Telepills, to force them to leave the room.
-        cancelTeleportSound()
-        Isaac.GetPlayer(0):UsePill(PillEffect.PILLEFFECT_TELEPILLS, PillColor.PILL_BLUE_BLUE, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOHUD)
+        ChallengeAPI.Util.EjectFromRoom()
     end
 end
 
@@ -158,8 +143,6 @@ local function onPostNewRoom(_mod)
     if not isHookValid() then
         return
     end
-
-    blindSprite:Load("gfx/ui/a-single-black-pixel-but-evil.anm2", true)
 
     handleDeletingDoors()
 

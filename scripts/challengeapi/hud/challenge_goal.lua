@@ -19,13 +19,10 @@ local function onChallengeStart(_mod, challenge, isContinue)
         return
     end
 
-    -- ChallengeAPI.Log("We are in challenge: " .. challenge.name)
-    -- ChallengeAPI.Log("The goal is: " .. goal.name)
-
     local goalIcon = goal.goalIcon
 
     if goalIcon == nil then
-        ChallengeAPI.Log("Goal icon is not defined.")
+        ChallengeAPI.Log("Challenge goal has no icon!")
         return
     end
 

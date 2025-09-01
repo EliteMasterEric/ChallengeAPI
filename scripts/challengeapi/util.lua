@@ -184,3 +184,37 @@ function ChallengeAPI.Util.HideAllRoomsOfTypeOnMinimap(roomType)
         ::continue::
     end
 end
+
+local blindSpriteBlack = Sprite()
+local blindSpriteWhite = Sprite()
+
+function ChallengeAPI.Util.BlindScreenWithBlack()
+    if not blindSpriteBlack:IsLoaded() then
+        blindSpriteBlack:Load("gfx/ui/a-single-black-pixel.anm2", true)
+    end
+
+    -- Render a black rectangle over the screen.
+    blindSpriteBlack:Play("Idle", true)
+    blindSpriteBlack.Scale = Vector(Isaac.GetScreenWidth(), Isaac.GetScreenHeight())
+    blindSpriteBlack:Render(Vector(0, 0))
+end
+
+function ChallengeAPI.Util.BlindScreenWithWhite()
+    if not blindSpriteWhite:IsLoaded() then
+        blindSpriteWhite:Load("gfx/ui/a-single-black-pixel-but-evil.anm2", true)
+    end
+
+    -- Render a white rectangle over the screen.
+    blindSpriteWhite:Play("Idle", true)
+    blindSpriteWhite.Scale = Vector(Isaac.GetScreenWidth(), Isaac.GetScreenHeight())
+    blindSpriteWhite:Render(Vector(0, 0))
+end
+
+function ChallengeAPI.Util.EjectFromRoom()
+    ChallengeAPI.Log("Evacuating a filtered room...")
+    
+    -- Play the teleport sound at 0 volume so the sound doesn't play later.
+    SFXManager():Play(SoundEffect.SOUND_HELL_PORTAL2, 0.0, 20, false, 1.0, 0)
+    -- Have the player consume a Telepills, to force them to leave the room.
+    Isaac.GetPlayer(0):UsePill(PillEffect.PILLEFFECT_TELEPILLS, PillColor.PILL_BLUE_BLUE, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOHUD)
+end
