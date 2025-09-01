@@ -18,6 +18,9 @@ A few new challenge-related features.
     - Value `16` (Crawlspace) will now prevent Crawlspaces from spawning.
         - This currently doesn't discriminate between Crawlspaces and Black Markets.
 
+### Fixed
+- Removed a particularly spammy log call.
+
 
 ## [0.2.0] - 2025-08-19
 

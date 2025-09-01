@@ -4,7 +4,7 @@
     <directory>challengeapi</directory>
     <id>3478225226</id>
     <description>A library mod to help create and manage custom challenges.</description>
-    <version>1.2</version>
+    <version>1.3</version>
     <visibility>Public</visibility>
     <tag id="Challenges"/>
     <tag id="Lua"/>
