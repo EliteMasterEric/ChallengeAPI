@@ -1,6 +1,7 @@
 
 -- TODO: This code should probably be part of Birthcake.
 function ChallengeAPI:Birthcake_EnableIntegration()
+    ---@diagnostic disable-next-line: undefined-global
     if BirthcakeRebaked ~= nil then
         ChallengeAPI.Log("Enabling Birthcake (Rebaked) integration...")
 
@@ -10,6 +11,9 @@ function ChallengeAPI:Birthcake_EnableIntegration()
         local isaacsBirthdayParty = Isaac.GetChallengeIdByName("Isaac's Birthday Party")
         local isaacsBirthdayPartyChallenge = ChallengeAPI:RegisterChallenge(isaacsBirthdayParty, "Isaac's Birthday Party",
             PlayerType.PLAYER_ISAAC, "beast")
+
+        -- Disable custom Beast hooks to prevent conflicts with THEIR custom beast hooks.
+        isaacsBirthdayPartyChallenge:SetEnableHooks(false)
 
         -- NOTE: Starting trinkets defined in the config are added automatically
         -- if you are on REPENTOGON. But if you want your mod to support players without RGON,
