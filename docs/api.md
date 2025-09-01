@@ -10,7 +10,23 @@ Aside from functionality provided by the base game, (end stage/boss, choosing Ca
 
 Goals will automatically be assigned to vanilla challenges based on the parameters provided in the `challenges.xml` file. If you don't need customize your challenge's goal, you don't have to assign a goal to your challenge.
 
-### ChallengeAPI:SetGoalIcon
+### Goal.new
+
+Creates a new challenge goal with the given parameters.
+
+All the vanilla challenge goals are registered with ChallengeAPI by default, so you should try calling `ChallengeAPI:GetGoalByChallengeParams` first, or use `ChallengeAPI:GetGoalById` if you know the goal's ID.
+
+```lua
+local goal = ChallengeAPI.Goal.New(endStage, altPath, secretPath, megaSatan)
+```
+
+**Parameters**
+* `endStage` - The `LevelStage` corresponding to the challenge goal.
+* `altPath` - The `GoalAltPaths` enum value corresponding to the challenge goal. For example, `ChallengeAPI.Enum.GoalAltPaths.DEVIL` for `false` in a `challenge.xml`, and `ChallengeAPI.Enum.GoalAltPaths.ANGEL` for a `true` value.
+* `secretPath` - The `GoalSecretPaths` enum value corresponding to the challenge goal. For example, `ChallengeAPI.Enum.GoalSecretPaths.NORMAL` for `false` in a `challenge.xml`, and `ChallengeAPI.Enum.GoalSecretPaths.SECRET` for a `true` value. You can also use `ChallengeAPI.Enum.GoalSecretPaths.ANY` to allow the player to choose whether they want the normal or secret path.
+* `megaSatan` - Whether the challenge requires beating Mega Satan.
+
+### Goal:SetGoalIcon
 Modifies the icon for the given goal. Used in both the HUD and the EID description.
 
 The default icons are 16x16, but larger icons are also supported.
@@ -27,6 +43,64 @@ goal:SetGoalIcon(sprite)
 **Parameters**
 
 * `icon` - The icon to use for the goal. This should be a valid `Sprite` object.
+
+### Goal:MatchesChallengeParams
+Checks if the goal matches the specified challenge parameters.
+
+```lua
+local doesMatch = goal:MatchesChallengeParams(endStage, altPath, secretPath, megaSatan)
+```
+
+**Parameters**
+
+* `endStage` - The `LevelStage` corresponding to the challenge goal.
+* `altPath` - Whether the challenge requires the alt path (`true` for Angel, `false` for Devil).
+* `secretPath` - Whether the challenge requires the secret path (`true` for Secret, `false` for Normal).
+* `megaSatan` - Whether the challenge requires beating Mega Satan.
+
+### Goal:SetHushMode
+Determines the behavior of the Hush door after the Mom's Heart fight while this challenge is active.
+
+```lua
+goal:SetHushMode(ChallengeAPI.Enum.GoalHushMode.NORMAL)
+```
+
+**Parameters**
+
+* `mode`: The `GoalHushMode` to apply.
+
+### Goal:SetBossRushMode
+Determines the behavior of the Boss Rush door after the Mom fight while this challenge is active.
+
+```lua
+goal:SetBossRushMode(ChallengeAPI.Enum.GoalBossRushMode.NORMAL)
+```
+
+**Parameters**
+
+* `mode`: The `GoalBossRushMode` to apply.
+
+### Goal:SetMomDoorMode
+Determines the behavior of the door out of the Mom boss fight on Depths 2 while this challenge is active.
+
+```lua
+goal:SetMomDoorMode(ChallengeAPI.Enum.GoalMomDoorMode.NORMAL)
+```
+
+**Parameters**
+
+* `mode`: The `GoalMomDoorMode` to apply.
+
+### Goal:SetMustFightBeast
+Enables the The Beast fight and associated hooks while this challenge is active. Requires the end stage to be Home (`LevelStage.STAGE8`).
+
+```lua
+goal:SetMustFightBeast(true)
+```
+
+**Parameters**
+
+* `value`: Whether the Beast fight is enabled.
 
 ## Goal-related functions
 
@@ -91,7 +165,20 @@ If the user has REPENTOGON is installed, ChallengeAPI will automatically registe
 
 If you want to change the goal for a challenge, retrieve it using `ChallengeAPI:GetChallengeById` or `ChallengeAPI:GetChallengeByName`, and then use `ChallengeParams:SetGoal` to set a new goal. Don't fetch the goal and modify it directly, or you may mess up other challenges!
 
-### ChallengeParams
+### ChallengeParams.new
+
+Creates a new ChallengeParams object. This is only used internally by ChallengeAPI, and should not be called directly.
+
+If REPENTOGON is installed, you can use `ChallengeAPI:GetChallengeById` or `ChallengeAPI:GetChallengeByName` to retrieve information about your challenge based on the XML data. If REPENTOGON is not installed, you will have to use `
+
+### ChallengeParams:IsActive
+
+Checks whether this particular challenge is active, and returns `true` if it is.
+
+```lua
+local challenge = ChallengeAPI:GetChallengeById("my-custom-challenge")
+challenge:IsActive()
+```
 
 ### ChallengeParams:SetGoal
 
@@ -449,6 +536,23 @@ challenge:SetCurseFilter({
 * `curseFilter` - A table of `LevelCurse` values corresponding to the curses to prevent from appearing on floors.
 
 ## Challenge-related functions
+
+### ChallengeAPI:RegisterChallenge
+
+Registers a challenge with ChallengeAPI. This is required to provide basic information about the challenge.
+
+Note this is done *automatically* for every challenge if REPENTOGON is installed, but you'll need to do it yourself if it's not installed.
+
+```lua
+local challenge = ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
+```
+
+**Parameters**
+
+* `id` - The numeric ID for the challenge, as defined in the `challenges.xml` file. Use `Isaac.GetChallengeIdByName(name)` if you don't know it.
+* `name` - The name for the challenge, as defined in the `challenges.xml` file. This will be how it's displayed in the EID HUD.
+* `playerType` - The `ChallengeAPI.Enum.PlayerTypes` enum value for the starting character of the challenge.
+* `goalId` - The string ID for the Goal in ChallengeAPI. Use 
 
 ### ChallengeAPI:GetChallengeByName
 Retrieve a challenge by its English name, as defined in the `challenges.xml` file.
