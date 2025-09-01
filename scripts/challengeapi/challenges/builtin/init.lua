@@ -1,0 +1,1 @@
+include('scripts.challengeapi.challenges.builtin.testbench_rgon')

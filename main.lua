@@ -39,6 +39,7 @@ include('scripts.challengeapi.goals.data_custom')
 include('scripts.challengeapi.challenges.challenges')
 include('scripts.challengeapi.challenges.data_config')
 include('scripts.challengeapi.challenges.data_hardcoded')
+include('scripts.challengeapi.challenges.builtin.init')
 
 -- Challenge Goal Hooks
 include('scripts.challengeapi.goals.hooks.init')

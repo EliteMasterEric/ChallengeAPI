@@ -29,6 +29,7 @@
 ---@field isMinShotSpeed boolean If true, player shot speed is fixed at 1.0 (like Slow Roll)
 ---@field isBigRange boolean If true, player range is fixed at 16.5 (like Pong)
 ---@field eidNotes string[] A list of additional lines to display in the EID description of the challenge.
+---@field requiresRepentogon boolean Whether this challenge requires the REPENTOGON mod to be played. (If true, and REPENTOGON is not installed, the player will be softlocked upon entering the challenge and a message will display.)
 ---@field minimumFireRate number? The minimum fire rate for the player, this applies a maximum tear delay
 local ChallengeParams = {}
 ChallengeParams.__index = ChallengeParams
@@ -68,6 +69,7 @@ function ChallengeParams.new(id, name, playerType, goalId)
     self.curseFilter = {}
     self.minimumFireRate = nil
     self.eidNotes = {}
+    self.requiresRepentogon = false
     return self
 end
 
@@ -90,6 +92,11 @@ end
 -- NOTE: This doesn't let you change the basic parameters of a challenge!
 function ChallengeParams:SetIsHardMode(value)
     self.isHardMode = value
+end
+
+-- Modifies whether this challenge requires the REPENTOGON mod to be played.
+function ChallengeParams:SetRequiresRepentogon(value)
+    self.requiresRepentogon = value
 end
 
 -- Modifies the list of starting collectibles as displayed in EID.
@@ -294,6 +301,22 @@ function ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
     Isaac.RunCallback(ChallengeAPI.Enum.Callbacks.CALLBACK_POST_CHALLENGE_REGISTERED, challenge)
 
     return challenge
+end
+
+-- A convenience function which registers a challenge if it doesn't exist,
+-- but returns the existing challenge if it's already been registered.
+---@param id integer An internal ID for the challenge.
+---@param name string The name of the challenge.
+---@param playerType PlayerType The player type to use for the challenge.
+---@param goalId string The ID for the Goal corresponding to this challenge. Check the docs for more info.
+---@return ChallengeParams
+function ChallengeAPI:GetOrRegisterChallenge(id, name, playerType, goalId)
+    local existingChallenge = ChallengeAPI:GetChallengeById(id)
+    if existingChallenge then
+        return existingChallenge
+    end
+
+    return ChallengeAPI:RegisterChallenge(id, name, playerType, goalId)
 end
 
 --- Retrieves a challenge by its numeric ID.

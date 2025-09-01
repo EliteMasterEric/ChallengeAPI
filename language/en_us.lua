@@ -3,8 +3,10 @@ local languageCode = "en_us"
 ChallengeAPI.Log("Loading language data: " .. languageCode)
 
 ChallengeAPI.language[languageCode] = {
+    REPENTOGONNotInstalled = "This challenge requires REPENTOGON\nto be installed and active.",
+
     EIDChallengeUnknown = "Unknown Challenge",
-    EIDChallengeUnknownDescription = "No challenge info registered#Install REPENTOGON or ask the mod author to add ChallengeAPI support",
+    EIDChallengeUnknownDescription = "No challenge info available#Install REPENTOGON or ask the mod author to add ChallengeAPI support",
 
     EIDCategoryName = "Current Challenge",
 
