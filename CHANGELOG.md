@@ -13,6 +13,10 @@ A few new challenge-related features.
 - Added the `ChallengeParams:SetRequiresRepentogon(bool)` function.
     - If enabled, a black screen will cover the screen and prevent the player from playing the challenge, as long as REPENTOGON is not installed.
     - Great in combination with the REPENTOGON-only `hidden` XML flag, or if your challenge utilizes hooks that only function with REPENTOGON.
+- Added built-in fixes for the `roomfilter` XML attribute.
+    - Values `14` (Devil Room) and `15` (Angel Room) will now negate your Devil and Angel chance as expected.
+    - Value `16` (Crawlspace) will now prevent Crawlspaces from spawning.
+        - This currently doesn't discriminate between Crawlspaces and Black Markets.
 
 
 ## [0.2.0] - 2025-08-19

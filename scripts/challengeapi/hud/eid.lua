@@ -1,7 +1,7 @@
 -- Handles the custom category in External Item Descriptions
 
 ChallengeAPI.EID_CurrentScrollOffset = 0
-ChallengeAPI.EID_DescriptionLineCount = 8
+ChallengeAPI.EID_DescriptionLineCount = 7
 ChallengeAPI.EID_HasInitialized = false
 
 -- A list of 
@@ -353,13 +353,13 @@ function ChallengeAPI:EID_HandleChallengeInfo(player)
 
     local visibleDescription = {}
     if showStartingEllipsis then
-        table.insert(visibleDescription, "{{Blank}}...")
+        table.insert(visibleDescription, "{{Blank}} ...")
     end
     for i = startIndex, endIndex do
         table.insert(visibleDescription, description[i])
     end
     if showEndingEllipsis then
-        table.insert(visibleDescription, "{{Blank}}...")
+        table.insert(visibleDescription, "{{Blank}} ...")
     end
 
     -- EID description line separator is "#"

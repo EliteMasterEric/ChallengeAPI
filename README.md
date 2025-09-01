@@ -13,7 +13,7 @@ A library mod for providing custom challenge-related functionality, including cu
     - The Beast (trophy spawning and softlock prevention)
 - Built-in fixes for challenge XML attributes which would otherwise have major issues:
     - `startingpill` (properly supports Little Baggy)
-    - `roomfilter` (REPENTOGON only, properly supports Devil and Angel rooms)
+    - `roomfilter` (properly supports Devil and Angel rooms)
 
 ## Upcoming Features
 

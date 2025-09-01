@@ -95,7 +95,10 @@ local function checkTrapdoor(_mod, gridEntity)
         return
     end
 
-    -- ChallengeAPI.Log("Trapdoor spawned! ", gridEntity.Position)
+    local challenge = ChallengeAPI:GetCurrentChallenge()
+    if challenge == nil then
+        return nil
+    end
 
     local goal = ChallengeAPI:GetCurrentChallengeGoal()
     if goal == nil then
@@ -104,7 +107,20 @@ local function checkTrapdoor(_mod, gridEntity)
 
     local currentStage = Game():GetLevel():GetAbsoluteStage()
 
-    -- ChallengeAPI.Log("Current stage: ", currentStage)
+    local isCrawlspace = gridEntity:GetType() == GridEntityType.GRID_STAIRS
+
+    if isCrawlspace then
+        local isCrawlspaceBanned = challenge:IsRoomFilterActive(RoomType.ROOM_DUNGEON)
+
+        if isCrawlspaceBanned then
+            -- Prevent trapdoor spawn.
+            destroyTrapdoor(gridEntity)
+        end
+
+        -- Otherwise, don't mess with crawlspaces.
+        return
+    end
+
     if currentStage == LevelStage.STAGE3_2 then
         local isSecretPathDoor = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_SECRET_EXIT_IDX
         local isGenesis = Game():GetLevel():GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX
@@ -136,16 +152,12 @@ local function checkBeam(_mod, entityEffect)
         return
     end
 
-    -- ChallengeAPI.Log("Beam of light spawned! ", entityEffect.Position)
-
     local goal = ChallengeAPI:GetCurrentChallengeGoal()
     if goal == nil then
         return nil
     end
 
     local currentStage = Game():GetLevel():GetAbsoluteStage()
-
-    -- ChallengeAPI.Log("Current stage: ", currentStage)
 
     local isInAscent = Game():GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
 
@@ -210,6 +222,8 @@ ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GAME_END, onGameEnd)
 if ChallengeAPI.IsREPENTOGON then
     ---@diagnostic disable-next-line: undefined-field
     ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GRID_ENTITY_SPAWN, checkTrapdoor, GridEntityType.GRID_TRAPDOOR)
+    ---@diagnostic disable-next-line: undefined-field
+    ChallengeAPI:AddCallback(ModCallbacks.MC_POST_GRID_ENTITY_SPAWN, checkTrapdoor, GridEntityType.GRID_STAIRS) -- Crawlspace
 else
     ChallengeAPI:AddCallback(ModCallbacks.MC_POST_UPDATE, checkTrapdoors_baseGame)
 end
