@@ -328,6 +328,7 @@ function ChallengeAPI:EID_HandleChallengeInfo(player)
         return
     end
 
+    -- TODO: Would probably be a good idea to cache this.
     local description = ChallengeAPI:EID_BuildFullChallengeDescription(player)
 
     local descLineCount = #description
@@ -347,9 +348,18 @@ function ChallengeAPI:EID_HandleChallengeInfo(player)
         endIndex = descLineCount
     end
 
+    local showStartingEllipsis = startIndex > 1
+    local showEndingEllipsis = endIndex < descLineCount
+
     local visibleDescription = {}
+    if showStartingEllipsis then
+        table.insert(visibleDescription, "{{Blank}}...")
+    end
     for i = startIndex, endIndex do
         table.insert(visibleDescription, description[i])
+    end
+    if showEndingEllipsis then
+        table.insert(visibleDescription, "{{Blank}}...")
     end
 
     -- EID description line separator is "#"
