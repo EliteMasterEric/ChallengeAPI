@@ -40,22 +40,25 @@ ChallengeAPI.challengesInitialized = false
 ChallengeAPI.goalsInitialized = false
 
 -- Clear the language data.
+-- This is not intended for external use, and may break the mod if used improperly.
 function ChallengeAPI:ClearLanguageData()
     ChallengeAPI.language:Clear()
 end
 
 -- Clear the list of goals.
+-- This is not intended for external use, and may break the mod if used improperly.
 function ChallengeAPI:ClearGoalData()
     ChallengeAPI.goals:Clear()
 end
 
 -- Clear the list of challenges.
+-- This is not intended for external use, and may break the mod if used improperly.
 function ChallengeAPI:ClearChallengeData()
     ChallengeAPI.challenges:Clear()
 end
 
 -- Clear all data.
--- This WILL mess up the mod unless you reinitialize immediately after.
+-- This is not intended for external use, and may break the mod if used improperly.
 function ChallengeAPI:ClearAllData()
     ChallengeAPI:ClearLanguageData()
     ChallengeAPI:ClearGoalData()

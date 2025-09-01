@@ -85,12 +85,6 @@ local function debug_count_goals(_, cmd, args)
     ChallengeAPI.Log("ChallengeAPI has registered " .. ChallengeAPI.goals:GetLength() .. " goals.")
 end
 
-local function debug_capi_initialize(_, cmd, args)
-    ChallengeAPI.Log("ChallengeAPI has initialized.")
-    ChallengeAPI:ClearAllData()
-    ChallengeAPI:Initialize()
-end
-
 -- Adds a callback for a command which checks the command name before executing the command.
 -- This should really be done by the base API, but whatever.
 ---@param commandFunction fun(_, cmd, args)
@@ -115,7 +109,6 @@ registerCommand(debug_kill_dogma, "kill_dogma")
 registerCommand(debug_weaken_beast, "weaken_beast")
 registerCommand(debug_count_challenges, "count_challenges")
 registerCommand(debug_count_goals, "count_goals")
-registerCommand(debug_capi_initialize, "capi_initialize")
 
 if ChallengeAPI.IsREPENTOGON then
     -- Add console commands to autocomplete
@@ -124,7 +117,6 @@ if ChallengeAPI.IsREPENTOGON then
     Console.RegisterCommand("weaken_beast", "Weaken the Beast to 30 HP, just before death.", "weaken_beast [mode]", false, AutocompleteType.CUSTOM)
     Console.RegisterCommand("count_challenges", "Counts the number of challenges registered by ChallengeAPI.", "count_challenges", false, AutocompleteType.NONE)
     Console.RegisterCommand("count_goals", "Counts the number of goals registered by ChallengeAPI.", "count_goals", false, AutocompleteType.NONE)
-    Console.RegisterCommand("capi_initialize", "Manually re-initialize ChallengeAPI.", "capi_initialize", false, AutocompleteType.NONE)
     
     -- Add console command autocomplete for weaken_beast
     ChallengeAPI:AddCallback(ModCallbacks.MC_CONSOLE_AUTOCOMPLETE, function(_, cmd, params)
