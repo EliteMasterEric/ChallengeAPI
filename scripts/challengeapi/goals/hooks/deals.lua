@@ -154,8 +154,10 @@ local function onPostNewRoom(_mod)
     evacuateDealRooms()
 end
 
-
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_RENDER, onPostRender)
-ChallengeAPI:AddCallback(ModCallbacks.MC_POST_DEVIL_CALCULATE, onPostDevilCalculate)
 ChallengeAPI:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, onRoomClear)
 ChallengeAPI:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, onPostNewRoom)
+
+if ChallengeAPI.IsREPENTOGON then
+    ChallengeAPI:AddCallback(ModCallbacks.MC_POST_DEVIL_CALCULATE, onPostDevilCalculate)
+end
